@@ -6,9 +6,7 @@ import {
   Flex,
   Heading,
   Input,
-  Text,
   VStack,
-  Spinner,
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
@@ -26,23 +24,17 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [errors, setErrors] = useState<FormErrors>({});
   const { setIsLoggedIn } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
-    setErrors((prev) => ({ ...prev, general: undefined }));
 
     try {
       await login(name.trim(), email.trim());
       setIsLoggedIn(true);
       navigate("/search");
-    } catch (err) {
-      setErrors({
-        general: "Login failed. Please check your username and email.",
-      });
     } finally {
       setLoading(false);
     }

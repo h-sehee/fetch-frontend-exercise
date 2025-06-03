@@ -14,13 +14,11 @@ import {
   Flex,
   Grid,
   GridItem,
-  Heading,
   IconButton,
   Image,
   Select,
   Spinner,
   useToast,
-  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -29,14 +27,12 @@ import { StarIcon } from "@chakra-ui/icons";
 const PAGE_SIZE = 10;
 const Search = () => {
   const toast = useToast();
-  const { isLoggedIn } = useAuth();
   const [breeds, setBreeds] = useState<string[]>([]);
   const [selectedBreed, setSelectedBreed] = useState<string>("");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [from, setFrom] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [dogResults, setDogResults] = useState<Dog[]>([]);
-  const [resultIds, setResultIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
@@ -64,7 +60,6 @@ useEffect(() => {
       const breedArr = selectedBreed ? [selectedBreed] : [];
       const res = await searchDogs(breedArr, PAGE_SIZE, from, sortParam);
       setTotal(res.total);
-      setResultIds(res.resultIds);
 
       if (res.resultIds.length > 0) {
         const dogList = await fetchDogsByIds(res.resultIds);
