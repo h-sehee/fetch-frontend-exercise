@@ -1,1 +1,1 @@
-# fetch-frontend-exercise
+# Fetch FE exercise
