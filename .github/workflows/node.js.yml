@@ -5,9 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -16,16 +14,43 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: true
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+
+    - id: get-repo-values
+      run: |
+        url=https://$(echo "${{ github.repository }}" | sed "s/\//.github.io\//")
+        echo "url=$url" >> $GITHUB_OUTPUT
+
+    - name: Update package.json homepage
+      uses: jossef/action-set-json-field@v1
+      with:
+        file: package.json
+        field: homepage
+        value: ${{ steps.get-repo-values.outputs.url }}
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build --if-present
+
+    - name: Deploy to gh-pages
+      env:
+        GH_TOKEN: ${{ secrets.GH_PAT }}
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        npm run deploy
