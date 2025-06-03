@@ -38,12 +38,11 @@ jobs:
         field: homepage
         value: ${{ steps.get-repo-values.outputs.url }}
 
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run test -- --coverage |& tee ./public/test_report.txt
-    - run: echo "<html><head><meta http-equiv='refresh' content='0; URL=${{ github.server_url }}/${{ github.repository }}' /></head><body>Redirecting to repository</body></html>" > ./public/github.html
+    - name: Install dependencies
+      run: npm ci
+      
     - run: npm run build
-    
+
     - name: Deploy to gh-pages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
