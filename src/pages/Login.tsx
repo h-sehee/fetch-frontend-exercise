@@ -9,8 +9,8 @@ import {
   Text,
   VStack,
   Spinner,
-  Field,
-  Fieldset,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { login } from "../api";
 import { useAuth } from "../context/AuthContext";
@@ -40,7 +40,9 @@ const Login = () => {
       setIsLoggedIn(true);
       navigate("/search");
     } catch (err) {
-      setErrors({ general: "Login failed. Please check your credentials." });
+      setErrors({
+        general: "Login failed. Please check your username and email.",
+      });
     } finally {
       setLoading(false);
     }
@@ -55,55 +57,44 @@ const Login = () => {
         shadow="md"
         w={{ base: "100%", sm: "400px" }}
       >
-        <VStack align="stretch">
+        <VStack spacing="6" align="stretch">
           <Heading as="h2" size="lg" textAlign="center">
             🐶 Dog Matcher
           </Heading>
 
           <Box as="form" onSubmit={handleLogin}>
-            <Fieldset.Root size="lg" required>
-              <Fieldset.Content>
-                <Field.Root id="name" required>
-                  <Field.Label>
-                    Name
-                    <Field.RequiredIndicator />
-                  </Field.Label>
-                  <Input
-                    type="text"
-                    placeholder="Your Name"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                </Field.Root>
-                <Field.Root id="email" required>
-                  <Field.Label>
-                    Email
-                    <Field.RequiredIndicator />
-                  </Field.Label>
-                  <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                  />
-                </Field.Root>
-              </Fieldset.Content>
+            <VStack spacing="4" align="stretch">
+              <FormControl id="name" isRequired>
+                <FormLabel>Name</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </FormControl>
+
+              <FormControl id="email" isRequired>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </FormControl>
+
               <Button
                 type="submit"
                 colorScheme="teal"
                 width="full"
                 mt="4"
-                loading={loading}
+                isLoading={loading}
                 loadingText="Logging in..."
               >
                 Login
               </Button>
-              <Fieldset.ErrorText></Fieldset.ErrorText>
-            </Fieldset.Root>
+            </VStack>
           </Box>
         </VStack>
       </Box>
