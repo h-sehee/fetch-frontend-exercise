@@ -13,12 +13,6 @@ import {
 import { login } from "../api";
 import { useAuth } from "../context/AuthContext";
 
-interface FormErrors {
-  name?: string;
-  email?: string;
-  general?: string;
-}
-
 const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

@@ -6,7 +6,6 @@ import {
   generateMatch,
   Dog,
 } from "../api/dog";
-import { useAuth } from "../context/AuthContext";
 import {
   Box,
   Button,
