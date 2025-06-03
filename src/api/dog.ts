@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://frontend-take-home-service.fetch.com";
+
 export interface Dog {
   id: string;
   img: string;
@@ -8,14 +10,14 @@ export interface Dog {
 }
 
 export interface SearchResponse {
-    resultIds: string[];
+  resultIds: string[];
   total: number;
   next?: string;
   prev?: string;
 }
 
 export const fetchBreeds = async (): Promise<string[]> => {
-  const res = await fetch("/dogs/breeds", {
+  const res = await fetch(`${API_BASE_URL}/dogs/breeds`, {
     method: "GET",
     credentials: "include",
   });
@@ -39,7 +41,7 @@ export const searchDogs = async (
   params.append("from", from.toString());
   params.append("sort", sort);
 
-  const url = `/dogs/search?${params.toString()}`;
+  const url = `${API_BASE_URL}/dogs/search?${params.toString()}`;
   const res = await fetch(url, {
     method: "GET",
     credentials: "include",
@@ -51,7 +53,7 @@ export const searchDogs = async (
 };
 
 export const fetchDogsByIds = async (ids: string[]): Promise<Dog[]> => {
-  const res = await fetch("/dogs", {
+  const res = await fetch(`${API_BASE_URL}/dogs`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -66,7 +68,7 @@ export const fetchDogsByIds = async (ids: string[]): Promise<Dog[]> => {
 };
 
 export const generateMatch = async (ids: string[]): Promise<string> => {
-  const res = await fetch("/dogs/match", {
+  const res = await fetch(`${API_BASE_URL}/dogs/match`, {
     method: "POST",
     credentials: "include",
     headers: {
