@@ -135,7 +135,6 @@ useEffect(() => {
     <Box p="4">
       <VStack align="stretch">
         <Flex wrap="wrap" align="center" justify="space-between" mb="4">
-          {/* Breed Filter */}
           <Box>
             <Text fontWeight="semibold" mb="1">
               Filter by Breed:

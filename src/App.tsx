@@ -9,14 +9,28 @@ import Layout from './components/Layout';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import PublicRoute from './components/PublicRoute';
+
+const basename =
+  process.env.NODE_ENV === 'production'
+    ? '/fetch-frontend-exercise'
+    : '/';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename={basename}>
         <Layout>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route index element={<Login />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
             <Route
               path="/search"
               element={
