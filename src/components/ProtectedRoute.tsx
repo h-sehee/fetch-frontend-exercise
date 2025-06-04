@@ -3,13 +3,17 @@ import { useAuth } from "../context/AuthContext";
 import { JSX } from "react";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
 
-    if (!isLoggedIn) {
-        return <Navigate to="/" replace />;
-    }
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>;
+  }
 
-    return children;
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
