@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/fetch-frontend-exercise/static/css/main.f855e6bc.css",
+    "main.js": "/fetch-frontend-exercise/static/js/main.a9dd9617.js",
+    "index.html": "/fetch-frontend-exercise/index.html",
+    "main.f855e6bc.css.map": "/fetch-frontend-exercise/static/css/main.f855e6bc.css.map",
+    "main.a9dd9617.js.map": "/fetch-frontend-exercise/static/js/main.a9dd9617.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.a9dd9617.js"
+  ]
+}
