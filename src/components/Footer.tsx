@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
           textAlign="center"
         >
           <Text fontSize="sm" color="darkBrand.500">
-            © 2025 Fetch Dog Matcher. All rights reserved.
+            © 2025 PawFetch. All rights reserved.
           </Text>
         </Box>
   );

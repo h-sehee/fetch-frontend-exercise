@@ -14,11 +14,13 @@ import {
   Grid,
   Image,
   usePrefersReducedMotion,
-  chakra
+  chakra,
+  Icon,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { login } from "../api";
 import { useAuth } from "../context/AuthContext";
+import { FaPaw } from "react-icons/fa";
 
 const Login = () => {
   const [name, setName] = useState("");
@@ -35,12 +37,12 @@ const Login = () => {
   //     50% { background-position: 50% 40%; }
   //     100% { background-position: 50% 60%; }
   //   `;
-  
+
   //   const flicker = keyframes`
   //     0%, 100% { filter: brightness(1); }
   //     50%      { filter: brightness(1.2); }
   //   `;
-  
+
   //   const animation = prefersReducedMotion
   //     ? undefined
   //     : `${aurora} 20s ease infinite, ${flicker} 5s ease-in-out infinite`;
@@ -59,96 +61,102 @@ const Login = () => {
 
   return (
     <chakra.div
-          w="100vw"
-          h="100vh"
-          overflow="hidden"
-          bgGradient="linear(to-r, #300d38, #fba919, #300d38)"
-          bgSize="200% 200%"
-          //animation={animation}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Box
-            bg="rgba(255, 255, 255, 0.15)"
-            backdropFilter="saturate(180%) blur(10px)"
-            border="1px solid rgba(48, 13, 56, 0.4)"
-            borderRadius="lg"
-            p="8"
-            maxW="400px"
-            w="90%"
-            boxShadow="lg"
+      w="100vw"
+      h="100vh"
+      overflow="hidden"
+      bgGradient="linear(to-r, #300d38, #fba919, #300d38)"
+      bgSize="200% 200%"
+      //animation={animation}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Box
+        bg="rgba(255, 255, 255, 0.15)"
+        backdropFilter="saturate(180%) blur(10px)"
+        border="1px solid rgba(48, 13, 56, 0.4)"
+        borderRadius="lg"
+        p="8"
+        maxW="400px"
+        w="90%"
+        boxShadow="lg"
+      >
+        <VStack spacing="6" align="stretch">
+          <Heading
+            as="h2"
+            size="2xl"
+            textAlign="center"
+            color="accent.500"
+            textShadow="1px 1px 2px rgba(0, 0, 0, 0.6)"
           >
-            <VStack spacing="6" align="stretch">
-              <Heading
-                as="h2"
-                size="2xl"
-                textAlign="center"
-                color="#fba919"
-                textShadow="1px 1px 2px rgba(0, 0, 0, 0.6)"
+            <Box as="span" fontWeight="bold">
+              <Icon
+                as={FaPaw as React.ElementType}
+                mr="4"
+              ></Icon>
+              PawFetch
+            </Box>
+          </Heading>
+          <Box as="form" onSubmit={handleLogin}>
+            <VStack spacing="4" align="stretch">
+              <FormControl id="name" isRequired>
+                <FormLabel color="white" fontSize="sm">
+                  Name
+                </FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  bg="rgba(255, 255, 255, 0.8)"
+                  _focus={{
+                    borderColor: "#fba919",
+                    boxShadow: "0 0 0 1px #fba919",
+                  }}
+                />
+              </FormControl>
+              <FormControl id="email" isRequired>
+                <FormLabel color="white" fontSize="sm">
+                  Email
+                </FormLabel>
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  bg="rgba(255, 255, 255, 0.8)"
+                  _focus={{
+                    borderColor: "#fba919",
+                    boxShadow: "0 0 0 1px #fba919",
+                  }}
+                />
+              </FormControl>
+              <Button
+                type="submit"
+                bg="#fba919"
+                color="#300d38"
+                width="full"
+                mt="4"
+                isLoading={loading}
+                loadingText="Logging in..."
+                _hover={{
+                  bg: "#e19916",
+                  transform: "scale(1.02)",
+                  boxShadow: "lg",
+                }}
+                _active={{
+                  bg: "#d48f14",
+                  transform: "scale(0.98)",
+                }}
+                transition="all 0.2s ease-in-out"
               >
-                🐾 Dog Matcher
-              </Heading>
-              <Box as="form" onSubmit={handleLogin}>
-                <VStack spacing="4" align="stretch">
-                  <FormControl id="name" isRequired>
-                    <FormLabel color="white" fontSize="sm">
-                      Name
-                    </FormLabel>
-                    <Input
-                      type="text"
-                      placeholder="Your Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      bg="rgba(255, 255, 255, 0.8)"
-                      _focus={{
-                        borderColor: "#fba919",
-                        boxShadow: "0 0 0 1px #fba919",
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl id="email" isRequired>
-                    <FormLabel color="white" fontSize="sm">
-                      Email
-                    </FormLabel>
-                    <Input
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      bg="rgba(255, 255, 255, 0.8)"
-                      _focus={{
-                        borderColor: "#fba919",
-                        boxShadow: "0 0 0 1px #fba919",
-                      }}
-                    />
-                  </FormControl>
-                  <Button
-                    type="submit"
-                    bg="#fba919"
-                    color="#300d38"
-                    width="full"
-                    mt="4"
-                    isLoading={loading}
-                    loadingText="Logging in..."
-                    _hover={{
-                      bg: "#e19916",
-                      transform: "scale(1.02)",
-                      boxShadow: "lg",
-                    }}
-                    _active={{
-                      bg: "#d48f14",
-                      transform: "scale(0.98)",
-                    }}
-                    transition="all 0.2s ease-in-out"
-                  >
-                    Login
-                  </Button>
-                </VStack>
-              </Box>
+                Login
+              </Button>
             </VStack>
           </Box>
-        </chakra.div>
+        </VStack>
+      </Box>
+    </chakra.div>
     // <Box position="relative" minH="100vh" minW="100vw" overflow="hidden">
     //   <Grid
     //     position="absolute"
