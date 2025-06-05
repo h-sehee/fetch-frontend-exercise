@@ -6,6 +6,7 @@ import "./index.css";
 import App from "./App";
 import { HashRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 
 const colors = {
   brand: {
@@ -23,12 +24,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <HashRouter>
-        <ChakraProvider theme={theme}>
-          <App />
-        </ChakraProvider>
-      </HashRouter>
-    </AuthProvider>
+    <ChakraProvider theme={theme}>
+      <AuthProvider>
+        <FavoritesProvider>
+          <HashRouter>
+            <App />
+          </HashRouter>
+        </FavoritesProvider>
+      </AuthProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );

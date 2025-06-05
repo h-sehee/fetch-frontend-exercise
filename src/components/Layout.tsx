@@ -1,7 +1,7 @@
 // src/components/Layout.tsx
 import React from "react";
-import Header from "./Header";
 import Footer from "./Footer";
+import NavBar from "./NavBar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,7 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
         minHeight: "100vh"
     }}
     >
-      <Header />
+      <NavBar />
 
       <main style={{ flex: 1, padding: "1rem 2rem" }}>
         {children}
