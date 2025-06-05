@@ -38,7 +38,7 @@ const NavBar: React.FC = () => {
       zIndex="10"
     >
       <Text fontWeight="bold" fontSize="lg">
-        🐶 Fetch Dog Search
+        🐶 PawFetch
       </Text>
 
       <HStack spacing="4">

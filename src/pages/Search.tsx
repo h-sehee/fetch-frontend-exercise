@@ -5,6 +5,9 @@ import {
   fetchDogsByIds,
   generateMatch,
   Dog,
+  fetchLocationsByZip,
+  searchLocations,
+  Location,
 } from "../api";
 import {
   Box,
@@ -23,12 +26,22 @@ import {
   Icon,
   HStack,
   useBreakpointValue,
+  Tag,
+  TagLabel,
+  TagCloseButton,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
-import { FaPaw } from "react-icons/fa";
+import {
+  FaPaw,
+  FaSortAlphaDown,
+  FaSortAlphaUp,
+  FaSortNumericDown,
+  FaSortNumericUp,
+} from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
+import FilterPopover from "../components/FilterPopover";
 
 const PAGE_SIZE = 10;
 
@@ -36,63 +49,173 @@ const Search: React.FC = () => {
   const toast = useToast();
 
   const [breeds, setBreeds] = useState<string[]>([]);
-  const [selectedBreed, setSelectedBreed] = useState<string>("");
+  const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
+
+  const [minAge, setMinAge] = useState<number>(0);
+  const [maxAge, setMaxAge] = useState<number>(0);
+  const [ageRange, setAgeRange] = useState<[number, number]>([0, 0]);
+
+  const [userZip, setUserZip] = useState<string>("");
+  const [radiusMeters, setRadiusMeters] = useState<number>(1000);
+  const [zipCodesInRadius, setZipCodesInRadius] = useState<string[]>([]);
+
+  const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">(
+    "breed"
+  );
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
   const [from, setFrom] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [dogResults, setDogResults] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
   const [isMatchOpen, setIsMatchOpen] = useState<boolean>(false);
+
   const { favorites, toggleFavorite } = useFavorites();
 
   useEffect(() => {
-    (async () => {
+    const fetchAllBreeds = async () => {
       try {
         const data = await fetchBreeds();
         setBreeds(data.sort());
-      } catch (e) {
+      } catch {
         toast({
           title: "Error",
-          description: "Failed to load breeds",
+          description: "Failed to load breeds.",
           status: "error",
           duration: 3000,
           isClosable: true,
         });
       }
-    })();
+    };
+
+    const fetchMinMaxAge = async () => {
+      try {
+        const resMin = await searchDogs([], 1, 0, "age:asc");
+        if (resMin.resultIds.length > 0) {
+          const [dogMin] = await fetchDogsByIds(resMin.resultIds);
+          setMinAge(dogMin.age);
+        } else {
+          setMinAge(0);
+        }
+
+        const resMax = await searchDogs([], 1, 0, "age:desc");
+        if (resMax.resultIds.length > 0) {
+          const [dogMax] = await fetchDogsByIds(resMax.resultIds);
+          setMaxAge(dogMax.age);
+        } else {
+          setMaxAge(0);
+        }
+      } catch {
+        setMinAge(0);
+        setMaxAge(0);
+      }
+    };
+
+    fetchAllBreeds();
+    fetchMinMaxAge();
   }, [toast]);
 
-  const doSearch = useCallback(async () => {
-    setLoading(true);
-    try {
-      const sortParam = `breed:${sortDir}`;
-      const breedArr = selectedBreed ? [selectedBreed] : [];
-      const res = await searchDogs(breedArr, PAGE_SIZE, from, sortParam);
-      setTotal(res.total);
-
-      if (res.resultIds.length > 0) {
-        const dogList = await fetchDogsByIds(res.resultIds);
-        setDogResults(dogList);
-      } else {
-        setDogResults([]);
-      }
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Failed to search dogs",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (minAge <= maxAge) {
+      setAgeRange([minAge, maxAge]);
     }
-  }, [selectedBreed, sortDir, from, toast]);
+  }, [minAge, maxAge]);
 
   useEffect(() => {
-    doSearch();
-  }, [doSearch]);
+    const doSearch = async () => {
+      setLoading(true);
+
+      try {
+        const sortParam = `${sortBy}:${sortDir}`;
+
+        const [minFilter, maxFilter] = ageRange;
+
+        const response = await searchDogs(
+          selectedBreeds,
+          PAGE_SIZE,
+          from,
+          sortParam,
+          minFilter > minAge ? minFilter : undefined,
+          maxFilter < maxAge ? maxFilter : undefined,
+          zipCodesInRadius
+        );
+
+        setTotal(response.total);
+
+        let dogs: Dog[] = [];
+        if (response.resultIds.length > 0) {
+          dogs = await fetchDogsByIds(response.resultIds);
+        }
+
+        setDogResults(dogs);
+      } catch (err) {
+        console.error(err);
+        toast({
+          title: "Error",
+          description: "Failed to search dogs",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setDogResults([]);
+        setTotal(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (maxAge > 0) {
+      doSearch();
+    }
+  }, [
+    selectedBreeds,
+    ageRange,
+    zipCodesInRadius,
+    sortBy,
+    sortDir,
+    from,
+    minAge,
+    maxAge,
+    toast,
+  ]);
+
+  useEffect(() => {
+      const fetchNearbyZips = async () => {
+        if (!userZip) {
+          setZipCodesInRadius([]);
+          return;
+        }
+        try {
+          const locations: Location[] = await fetchLocationsByZip([userZip]);
+          if (locations.length === 0) {
+            setZipCodesInRadius([]);
+            return;
+          }
+          const { latitude: userLat, longitude: userLon } = locations[0];
+  
+          const deltaLat = radiusMeters / 111000;
+          const deltaLon =
+            radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
+  
+          const { results } = await searchLocations({
+            geoBoundingBox: {
+              bottom_left: { lat: userLat - deltaLat, lon: userLon - deltaLon },
+              top_right: { lat: userLat + deltaLat, lon: userLon + deltaLon },
+            },
+            size: 10000,
+          });
+  
+          setZipCodesInRadius(results.map((r) => r.zip_code));
+        } catch (err) {
+          console.error("Error fetching nearby ZIPs:", err);
+          setZipCodesInRadius([]);
+        }
+      };
+  
+      fetchNearbyZips();
+    }, [userZip, radiusMeters]);
 
   const goNext = () => {
     if (from + PAGE_SIZE < total) {
@@ -153,32 +276,49 @@ const Search: React.FC = () => {
   return (
     <Box p="4">
       <VStack align="stretch" spacing="6">
-        <HStack wrap="wrap" align="flex-end" spacing="8" mb="4">
-          <Box>
+        <HStack wrap="wrap" align="flex-end" spacing="8">
+          <FilterPopover
+            allBreeds={breeds}
+            selectedBreeds={selectedBreeds}
+            onChangeBreeds={(vals) => {
+              setSelectedBreeds(vals);
+              setFrom(0);
+            }}
+            minAge={minAge}
+            maxAge={maxAge}
+            ageRange={ageRange}
+            onChangeAgeRange={(range) => {
+              setAgeRange(range);
+              setFrom(0);
+            }}
+            userZip={userZip}
+            onChangeUserZip={(zip) => {
+              setUserZip(zip);
+              setFrom(0);
+            }}
+            radiusMeters={radiusMeters}
+            onChangeRadius={(meters) => {
+              setRadiusMeters(meters);
+              setFrom(0);
+            }}
+          />
+
+          <HStack spacing="4" flexShrink={0} whiteSpace={"nowrap"}>
             <Text fontWeight="semibold" mb="1">
-              Filter by Breed:
+              Sort By:
             </Text>
             <Select
-              placeholder="All Breeds"
-              value={selectedBreed}
+              value={sortBy}
               onChange={(e) => {
-                setSelectedBreed(e.target.value);
+                setSortBy(e.target.value as "breed" | "name" | "age");
                 setFrom(0);
               }}
               focusBorderColor="accent.500"
             >
-              {breeds.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
+              <option value="breed">Breed</option>
+              <option value="name">Name</option>
+              <option value="age">Age</option>
             </Select>
-          </Box>
-
-          <Box>
-            <Text fontWeight="semibold" mb="1">
-              Sort by Breed:
-            </Text>
             <Button
               size="sm"
               onClick={() =>
@@ -187,9 +327,86 @@ const Search: React.FC = () => {
               colorScheme="brand"
               variant="solid"
             >
-              {sortDir === "asc" ? "Ascending ↑" : "Descending ↓"}
+              <Icon
+                as={
+                  sortBy === "age"
+                    ? sortDir === "asc"
+                      ? (FaSortNumericDown as React.ElementType)
+                      : (FaSortNumericUp as React.ElementType)
+                    : sortDir === "asc"
+                    ? (FaSortAlphaDown as React.ElementType)
+                    : (FaSortAlphaUp as React.ElementType)
+                }
+                boxSize={5}
+              />
             </Button>
+          </HStack>
+
+          <Box>
+            
           </Box>
+        </HStack>
+        <HStack wrap="wrap" spacing="2" mb="2">
+          <Box>
+            <HStack spacing="2" flexWrap="wrap">
+              {selectedBreeds.map((breed) => (
+                <Tag
+                  size="md"
+                  key={breed}
+                  borderRadius="full"
+                  variant="solid"
+                  colorScheme="brand"
+                >
+                  <TagLabel>{breed}</TagLabel>
+                  <TagCloseButton
+                    onClick={() => {
+                      setSelectedBreeds((prev) =>
+                        prev.filter((b) => b !== breed)
+                      );
+                      setFrom(0);
+                    }}
+                  />
+                </Tag>
+              ))}
+
+              {!(ageRange[0] === minAge && ageRange[1] === maxAge) && (
+                <Tag
+                  size="md"
+                  borderRadius="full"
+                  variant="solid"
+                  colorScheme="brand"
+                >
+                  <TagLabel>
+                    Age: {ageRange[0]} - {ageRange[1]}
+                  </TagLabel>
+                  <TagCloseButton
+                    onClick={() => {
+                      setAgeRange([minAge, maxAge]);
+                      setFrom(0);
+                    }}
+                  />
+                </Tag>
+              )}
+
+              {userZip && (
+                <Tag
+                  size="md"
+                  borderRadius="full"
+                  variant="solid"
+                  colorScheme="brand"
+                >
+                  <TagLabel>ZIP: {userZip} | ~{radiusMeters} m</TagLabel>
+                  <TagCloseButton
+                    onClick={() => {
+                      setUserZip("");
+                      setZipCodesInRadius([]);
+                      setFrom(0);
+                    }}
+                  />
+                </Tag>
+              )}
+            </HStack>
+          </Box>s
         </HStack>
 
         {loading ? (
@@ -298,7 +515,9 @@ const Search: React.FC = () => {
         {...horizontalPos}
         transform={transformValue}
         colorScheme="darkBrand"
-        leftIcon={<Icon as={FaPaw as React.ElementType} boxSize={5} color="white" />}
+        leftIcon={
+          <Icon as={FaPaw as React.ElementType} boxSize={5} color="white" />
+        }
         boxShadow="lg"
         px="6"
         py="4"
