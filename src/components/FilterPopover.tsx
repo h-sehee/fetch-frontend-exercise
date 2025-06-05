@@ -186,10 +186,10 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   onChangeEnd={(val) => handleAgeChangeEnd(val)}
                 >
                   <RangeSliderTrack>
-                    <RangeSliderFilledTrack bg="accent.500" />
+                    <RangeSliderFilledTrack bg="brand.500" />
                   </RangeSliderTrack>
-                  <RangeSliderThumb index={0} boxSize={4} bg="brand.500" />
-                  <RangeSliderThumb index={1} boxSize={4} bg="brand.500" />
+                  <RangeSliderThumb index={0} boxSize={4} bg="accent.500" />
+                  <RangeSliderThumb index={1} boxSize={4} bg="accent.500" />
                 </RangeSlider>
               </AccordionPanel>
             </AccordionItem>
@@ -208,7 +208,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   Zip Code
                 </Text>
                 <Input
-                  placeholder="e.g. 94103"
+                  placeholder="e.g. 53703"
                   size="sm"
                   mb="3"
                   value={tempZip}
@@ -224,17 +224,17 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   {tempRadius} m
                 </Box>
                 <RangeSlider
-                  min={100}
+                  min={500}
                   max={50000}
-                  step={100}
+                  step={500}
                   value={[tempRadius]}
                   onChange={(val) => setTempRadius(val[0])}
                   onChangeEnd={(val) => handleRadiusChangeEnd(val[0])}
                 >
                   <RangeSliderTrack>
-                    <RangeSliderFilledTrack bg="accent.500" />
+                    <RangeSliderFilledTrack bg="brand.500" />
                   </RangeSliderTrack>
-                  <RangeSliderThumb index={0} boxSize={4} bg="brand.500" />
+                  <RangeSliderThumb index={0} boxSize={4} bg="accent.500" />
                 </RangeSlider>
               </AccordionPanel>
             </AccordionItem>

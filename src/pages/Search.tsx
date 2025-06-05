@@ -5,6 +5,9 @@ import {
   fetchDogsByIds,
   generateMatch,
   Dog,
+  fetchLocationsByZip,
+  searchLocations,
+  Location,
 } from "../api";
 import {
   Box,
@@ -179,72 +182,40 @@ const Search: React.FC = () => {
   ]);
 
   useEffect(() => {
-    const fetchNearbyZips = async () => {
-      if (!userZip) {
-        setZipCodesInRadius([]);
-        return;
-      }
-      try {
-        const locRes = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/locations`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify([userZip]),
-          }
-        );
-        if (!locRes.ok) {
+      const fetchNearbyZips = async () => {
+        if (!userZip) {
           setZipCodesInRadius([]);
           return;
         }
-        const [locObj]: {
-          zip_code: string;
-          latitude: number;
-          longitude: number;
-        }[] = await locRes.json();
-        const userLat = locObj.latitude;
-        const userLon = locObj.longitude;
-
-        const deltaLat = radiusMeters / 111000;
-        const deltaLon =
-          radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
-
-        const bbox = {
-          bottom_left: { lat: userLat - deltaLat, lon: userLon - deltaLon },
-          top_right: { lat: userLat + deltaLat, lon: userLon + deltaLon },
-        };
-        const searchRes = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/locations/search`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              geoBoundingBox: {
-                bottom_left: bbox.bottom_left,
-                top_right: bbox.top_right,
-              },
-              size: 10000,
-            }),
+        try {
+          const locations: Location[] = await fetchLocationsByZip([userZip]);
+          if (locations.length === 0) {
+            setZipCodesInRadius([]);
+            return;
           }
-        );
-        if (!searchRes.ok) {
+          const { latitude: userLat, longitude: userLon } = locations[0];
+  
+          const deltaLat = radiusMeters / 111000;
+          const deltaLon =
+            radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
+  
+          const { results } = await searchLocations({
+            geoBoundingBox: {
+              bottom_left: { lat: userLat - deltaLat, lon: userLon - deltaLon },
+              top_right: { lat: userLat + deltaLat, lon: userLon + deltaLon },
+            },
+            size: 10000,
+          });
+  
+          setZipCodesInRadius(results.map((r) => r.zip_code));
+        } catch (err) {
+          console.error("Error fetching nearby ZIPs:", err);
           setZipCodesInRadius([]);
-          return;
         }
-        const { results }: { results: { zip_code: string }[] } =
-          await searchRes.json();
-        const zips = results.map((r) => r.zip_code);
-        setZipCodesInRadius(zips);
-      } catch (err) {
-        console.error("Error fetching nearby ZIPs:", err);
-        setZipCodesInRadius([]);
-      }
-    };
-
-    fetchNearbyZips();
-  }, [userZip, radiusMeters]);
+      };
+  
+      fetchNearbyZips();
+    }, [userZip, radiusMeters]);
 
   const goNext = () => {
     if (from + PAGE_SIZE < total) {
@@ -424,7 +395,7 @@ const Search: React.FC = () => {
                   variant="solid"
                   colorScheme="brand"
                 >
-                  <TagLabel>ZIP: {userZip}</TagLabel>
+                  <TagLabel>ZIP: {userZip} | ~{radiusMeters} m</TagLabel>
                   <TagCloseButton
                     onClick={() => {
                       setUserZip("");
