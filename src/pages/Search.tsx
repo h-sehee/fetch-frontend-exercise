@@ -5,7 +5,7 @@ import {
   fetchDogsByIds,
   generateMatch,
   Dog,
-} from "../api/dog";
+} from "../api";
 import {
   Box,
   Button,
@@ -22,7 +22,6 @@ import {
   VStack,
   Icon,
 } from "@chakra-ui/react";
-import { StarIcon } from "@chakra-ui/icons";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";

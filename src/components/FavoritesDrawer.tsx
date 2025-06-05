@@ -10,21 +10,23 @@ import {
   HStack,
   Image,
   Text,
-  Button,
   Box,
+  IconButton,
 } from "@chakra-ui/react";
 import { useFavorites } from "../context/FavoritesContext";
+import { CloseIcon } from "@chakra-ui/icons";
 
 const FavoritesDrawer: React.FC = () => {
-  const {
-    favoriteDogsDetails,
-    isFavOpen,
-    closeFavorites,
-    toggleFavorite,
-  } = useFavorites();
+  const { favoriteDogsDetails, isFavOpen, closeFavorites, toggleFavorite } =
+    useFavorites();
 
   return (
-    <Drawer placement="right" onClose={closeFavorites} isOpen={isFavOpen} size="sm">
+    <Drawer
+      placement="right"
+      onClose={closeFavorites}
+      isOpen={isFavOpen}
+      size="sm"
+    >
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -51,13 +53,14 @@ const FavoritesDrawer: React.FC = () => {
                       {dog.breed}, {dog.age} year{dog.age > 1 && "s"}
                     </Text>
                   </Box>
-                  <Button
+                  <IconButton
+                    aria-label={"Drawer"}
+                    icon={<CloseIcon />} 
                     size="sm"
+                    variant="ghost"
                     colorScheme="red"
                     onClick={() => toggleFavorite(dog.id)}
-                  >
-                    Remove
-                  </Button>
+                  ></IconButton>
                 </HStack>
               ))}
             </VStack>

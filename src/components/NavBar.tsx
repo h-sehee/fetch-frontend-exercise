@@ -26,11 +26,15 @@ const NavBar: React.FC = () => {
   return (
     <Flex
       as="nav"
-      justify="space-between"
       align="center"
-      p="4"
-      bg="gray.100"
-      borderBottomWidth="1px"
+      justify="space-between"
+      px="6"
+      py="4"
+      bg="white"
+      boxShadow="sm"
+      position="sticky"
+      top="0"
+      zIndex="10"
     >
       <Text fontWeight="bold" fontSize="lg">
         🐶 Fetch Dog Search

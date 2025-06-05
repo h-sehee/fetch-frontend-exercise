@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { Dog, fetchDogsByIds } from "../api/dog";
+import { Dog, fetchDogsByIds } from "../api";
 
 interface FavoritesContextType {
   favorites: Set<string>;
