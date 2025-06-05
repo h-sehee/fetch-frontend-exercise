@@ -5,7 +5,7 @@ import {
   fetchDogsByIds,
   generateMatch,
   Dog,
-} from "../api/dog";
+} from "../api";
 import {
   Box,
   Button,
@@ -20,12 +20,17 @@ import {
   useToast,
   Text,
   VStack,
+  Icon,
 } from "@chakra-ui/react";
-import { StarIcon } from "@chakra-ui/icons";
+import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { useFavorites } from "../context/FavoritesContext";
+import FavoritesDrawer from "../components/FavoritesDrawer";
 
 const PAGE_SIZE = 10;
+
 const Search = () => {
   const toast = useToast();
+
   const [breeds, setBreeds] = useState<string[]>([]);
   const [selectedBreed, setSelectedBreed] = useState<string>("");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -33,9 +38,10 @@ const Search = () => {
   const [total, setTotal] = useState<number>(0);
   const [dogResults, setDogResults] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
-useEffect(() => {
+  const { favorites, toggleFavorite } = useFavorites();
+
+  useEffect(() => {
     (async () => {
       try {
         const data = await fetchBreeds();
@@ -92,15 +98,6 @@ useEffect(() => {
     if (from - PAGE_SIZE >= 0) {
       setFrom((prev) => prev - PAGE_SIZE);
     }
-  };
-
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => {
-      const copy = new Set(prev);
-      if (copy.has(id)) copy.delete(id);
-      else copy.add(id);
-      return copy;
-    });
   };
 
   const handleGenerateMatch = async () => {
@@ -177,13 +174,7 @@ useEffect(() => {
         </Flex>
 
         {matchDog && (
-          <Box
-            p="4"
-            borderWidth="1px"
-            borderRadius="md"
-            bg="purple.50"
-            mb="4"
-          >
+          <Box p="4" borderWidth="1px" borderRadius="md" bg="purple.50" mb="4">
             <Text fontSize="lg" fontWeight="bold" mb="2">
               🎉 Your Matched Dog! 🎉
             </Text>
@@ -227,7 +218,10 @@ useEffect(() => {
               }.`}
             </Text>
 
-            <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap="6">
+            <Grid
+              templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+              gap="6"
+            >
               {dogResults.map((dog) => (
                 <GridItem
                   key={dog.id}
@@ -259,9 +253,16 @@ useEffect(() => {
                   </Box>
                   <IconButton
                     aria-label="Favorite"
-                    icon={<StarIcon />}
-                    colorScheme={favorites.has(dog.id) ? "yellow" : "gray"}
+                      icon={
+                        favorites.has(dog.id)
+                          ? <Icon as={AiFillStar as React.ElementType}/>
+                          : <Icon as={AiOutlineStar as React.ElementType} />
+                      }
+                    color="yellow.400"
+                    fontSize="20px"
+                    fontWeight="bold"
                     position="absolute"
+                    borderRadius="full"
                     top="2"
                     right="2"
                     size="sm"
@@ -296,9 +297,9 @@ useEffect(() => {
           </>
         )}
       </VStack>
+      <FavoritesDrawer />
     </Box>
   );
-
 };
 
 export default Search;
