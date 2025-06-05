@@ -11,6 +11,8 @@ import {
   FormLabel,
   Icon,
   Image,
+  Text,
+  Link
 } from "@chakra-ui/react";
 import { login } from "../api";
 import { useAuth } from "../context/AuthContext";
@@ -39,8 +41,13 @@ const Login = () => {
 
   return (
     <Flex h="100vh" overflow="hidden">
-      <Flex flex={{base:"1", md: "0.5"}} align="center" justify="center">
-        <Box maxW={{ base: "90vw", md: "30vw"}} minW={{ base: "100%", md: "400px" }} w="100%" p="8">
+      <Flex flex={{ base: "1", md: "0.5" }} align="center" justify="center">
+        <Box
+          maxW={{ base: "90vw", md: "30vw" }}
+          minW={{ base: "100%", md: "400px" }}
+          w="100%"
+          p="8"
+        >
           <VStack spacing="6" align="stretch">
             <Heading
               as="h2"
@@ -93,15 +100,35 @@ const Login = () => {
         </Box>
       </Flex>
 
-      <Box flex={{base:"0", md:"1"}} display={{ base: "none", md: "block" }}>
+      <Box
+        flex={{ base: "0", md: "1" }}
+        display={{ base: "none", md: "block" }}
+      >
         <Image
-          src = {loginPageImage}
+          src={loginPageImage}
           alt="Dog Background"
           objectFit="cover"
           w="100%"
           h="100%"
           objectPosition="60% center"
         />
+        <Text
+          position="absolute"
+          bottom="2"
+          right="4"
+          fontSize="xs"
+          color="gray.400"
+          px="2"
+          py="1"
+        >
+          <Link
+            href="https://www.freepik.com/free-photo/side-view-dog-woman-hand-shaking-park_3865307.htm#fromView=image_search_similar&page=1&position=4&uuid=a29df7f9-ae24-41d2-a122-c45f6ea4c991&query=dog+shaking+hand+with+woman"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Image by freepik
+          </Link>
+        </Text>
       </Box>
     </Flex>
   );
