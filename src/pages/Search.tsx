@@ -21,15 +21,18 @@ import {
   Text,
   VStack,
   Icon,
+  HStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { FaPaw } from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
 
 const PAGE_SIZE = 10;
 
-const Search = () => {
+const Search: React.FC = () => {
   const toast = useToast();
 
   const [breeds, setBreeds] = useState<string[]>([]);
@@ -134,12 +137,23 @@ const Search = () => {
   const handleMatchClose = () => {
     setIsMatchOpen(false);
     setMatchDog(null);
-  }
+  };
+
+  const bottomOffset = useBreakpointValue({ base: "2rem", md: "2rem" });
+  const horizontalPos = useBreakpointValue<{ left?: string; right?: string }>({
+    base: { left: "50%" },
+    md: { right: "2rem" },
+  });
+
+  const transformValue = useBreakpointValue({
+    base: "translateX(-50%)",
+    md: "none",
+  });
 
   return (
     <Box p="4">
-      <VStack align="stretch">
-        <Flex wrap="wrap" align="center" justify="space-between" mb="4">
+      <VStack align="stretch" spacing="6">
+        <HStack wrap="wrap" align="flex-end" spacing="8" mb="4">
           <Box>
             <Text fontWeight="semibold" mb="1">
               Filter by Breed:
@@ -151,6 +165,7 @@ const Search = () => {
                 setSelectedBreed(e.target.value);
                 setFrom(0);
               }}
+              focusBorderColor="accent.500"
             >
               {breeds.map((b) => (
                 <option key={b} value={b}>
@@ -169,21 +184,17 @@ const Search = () => {
               onClick={() =>
                 setSortDir((prev) => (prev === "asc" ? "desc" : "asc"))
               }
+              colorScheme="brand"
+              variant="solid"
             >
               {sortDir === "asc" ? "Ascending ↑" : "Descending ↓"}
             </Button>
           </Box>
-
-          <Box>
-            <Button colorScheme="purple" onClick={handleGenerateMatch}>
-              Generate Match
-            </Button>
-          </Box>
-        </Flex>
+        </HStack>
 
         {loading ? (
           <Center py="20">
-            <Spinner size="lg" />
+            <Spinner size="lg" color="accent.500" />
           </Center>
         ) : (
           <>
@@ -204,6 +215,7 @@ const Search = () => {
                   borderRadius="md"
                   overflow="hidden"
                   position="relative"
+                  _hover={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
                 >
                   <Image
                     src={dog.img}
@@ -228,12 +240,14 @@ const Search = () => {
                   </Box>
                   <IconButton
                     aria-label="Favorite"
-                      icon={
-                        favorites.has(dog.id)
-                          ? <Icon as={AiFillStar as React.ElementType}/>
-                          : <Icon as={AiOutlineStar as React.ElementType} />
-                      }
-                    color="yellow.400"
+                    icon={
+                      favorites.has(dog.id) ? (
+                        <Icon as={AiFillStar as React.ElementType} />
+                      ) : (
+                        <Icon as={AiOutlineStar as React.ElementType} />
+                      )
+                    }
+                    color="accent.500"
                     fontSize="20px"
                     fontWeight="bold"
                     position="absolute"
@@ -251,7 +265,7 @@ const Search = () => {
               <Button
                 onClick={goPrev}
                 disabled={from === 0}
-                colorScheme="teal"
+                colorScheme="brand"
                 variant="outline"
               >
                 Prev
@@ -263,7 +277,7 @@ const Search = () => {
               <Button
                 onClick={goNext}
                 disabled={from + PAGE_SIZE >= total}
-                colorScheme="teal"
+                colorScheme="brand"
                 variant="outline"
               >
                 Next
@@ -278,6 +292,24 @@ const Search = () => {
         onClose={handleMatchClose}
         matchDog={matchDog}
       />
+      <Button
+        position="fixed"
+        bottom={bottomOffset}
+        {...horizontalPos}
+        transform={transformValue}
+        colorScheme="darkBrand"
+        leftIcon={<Icon as={FaPaw as React.ElementType} boxSize={5} color="white" />}
+        boxShadow="lg"
+        px="6"
+        py="4"
+        fontSize="lg"
+        borderRadius="full"
+        _hover={{ transform: "scale(1.05)" }}
+        transition="transform 0.2s"
+        onClick={handleGenerateMatch}
+      >
+        Match
+      </Button>
     </Box>
   );
 };

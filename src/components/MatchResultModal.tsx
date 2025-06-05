@@ -15,8 +15,6 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { Dog } from "../api";
-import { match } from "assert";
-import { CloseIcon } from "@chakra-ui/icons";
 
 interface MatchResultModalProps {
   isOpen: boolean;
@@ -32,11 +30,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
   if (!matchDog) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="md">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader textAlign="center">🎉 Your Matched Dog! 🎉</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader textAlign="center" bg="darkBrand.500" color="white">
+          🎉 Your Matched Dog! 🎉
+        </ModalHeader>
+        <ModalCloseButton color="white"/>
         <ModalBody>
           <VStack spacing={4} align="center">
             <Image
