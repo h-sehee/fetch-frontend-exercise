@@ -25,7 +25,13 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
-import { FaPaw } from "react-icons/fa";
+import {
+  FaPaw,
+  FaSortAlphaDown,
+  FaSortAlphaUp,
+  FaSortNumericDown,
+  FaSortNumericUp,
+} from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
@@ -37,6 +43,7 @@ const Search: React.FC = () => {
 
   const [breeds, setBreeds] = useState<string[]>([]);
   const [selectedBreed, setSelectedBreed] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"breed" | "name" | "age">("breed");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [from, setFrom] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
@@ -63,36 +70,36 @@ const Search: React.FC = () => {
     })();
   }, [toast]);
 
-  const doSearch = useCallback(async () => {
-    setLoading(true);
-    try {
-      const sortParam = `breed:${sortDir}`;
-      const breedArr = selectedBreed ? [selectedBreed] : [];
-      const res = await searchDogs(breedArr, PAGE_SIZE, from, sortParam);
-      setTotal(res.total);
-
-      if (res.resultIds.length > 0) {
-        const dogList = await fetchDogsByIds(res.resultIds);
-        setDogResults(dogList);
-      } else {
-        setDogResults([]);
-      }
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Failed to search dogs",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedBreed, sortDir, from, toast]);
-
   useEffect(() => {
+    const doSearch = async () => {
+      setLoading(true);
+      try {
+        const sortParam = `${sortBy}:${sortDir}`;
+        const breedsArr = selectedBreed ? [selectedBreed] : [];
+        const res = await searchDogs(breedsArr, PAGE_SIZE, from, sortParam);
+        setTotal(res.total);
+
+        if (res.resultIds.length > 0) {
+          const dogs = await fetchDogsByIds(res.resultIds);
+          setDogResults(dogs);
+        } else {
+          setDogResults([]);
+        }
+      } catch {
+        toast({
+          title: "Error",
+          description: "Failed to search dogs.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
     doSearch();
-  }, [doSearch]);
+  }, [selectedBreed, sortBy, sortDir, from, toast]);
 
   const goNext = () => {
     if (from + PAGE_SIZE < total) {
@@ -177,8 +184,22 @@ const Search: React.FC = () => {
 
           <Box>
             <Text fontWeight="semibold" mb="1">
-              Sort by Breed:
+              Sort by:
             </Text>
+            <Select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value as "breed" | "name" | "age");
+                setFrom(0);
+              }}
+              focusBorderColor="accent.500"
+            >
+              <option value="breed">Breed</option>
+              <option value="name">Name</option>
+              <option value="age">Age</option>
+            </Select>
+          </Box>
+          <Box>
             <Button
               size="sm"
               onClick={() =>
@@ -186,8 +207,20 @@ const Search: React.FC = () => {
               }
               colorScheme="brand"
               variant="solid"
+              borderRadius="full"
             >
-              {sortDir === "asc" ? "Ascending ↑" : "Descending ↓"}
+              <Icon
+                as={
+                  sortBy === "age"
+                    ? sortDir === "asc"
+                      ? (FaSortNumericDown as React.ElementType)
+                      : (FaSortNumericUp as React.ElementType)
+                    : sortDir === "asc"
+                    ? (FaSortAlphaDown as React.ElementType)
+                    : (FaSortAlphaUp as React.ElementType)
+                }
+                boxSize={5}
+              />
             </Button>
           </Box>
         </HStack>
@@ -298,7 +331,9 @@ const Search: React.FC = () => {
         {...horizontalPos}
         transform={transformValue}
         colorScheme="darkBrand"
-        leftIcon={<Icon as={FaPaw as React.ElementType} boxSize={5} color="white" />}
+        leftIcon={
+          <Icon as={FaPaw as React.ElementType} boxSize={5} color="white" />
+        }
         boxShadow="lg"
         px="6"
         py="4"
