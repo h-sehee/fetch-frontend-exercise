@@ -11,20 +11,20 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route index element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/search"
-          element={
-            <ProtectedRoute>
+    <Routes>
+      <Route index element={<Login />} />
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/search"
+        element={
+          <ProtectedRoute>
+            <Layout>
               <Search />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Layout>
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 
