@@ -25,6 +25,7 @@ import {
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
+import MatchResultModal from "../components/MatchResultModal";
 
 const PAGE_SIZE = 10;
 
@@ -39,6 +40,7 @@ const Search = () => {
   const [dogResults, setDogResults] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
+  const [isMatchOpen, setIsMatchOpen] = useState<boolean>(false);
   const { favorites, toggleFavorite } = useFavorites();
 
   useEffect(() => {
@@ -117,6 +119,7 @@ const Search = () => {
       const matchedId = await generateMatch(favIds);
       const matchedDogArr = await fetchDogsByIds([matchedId]);
       setMatchDog(matchedDogArr[0] || null);
+      setIsMatchOpen(true);
     } catch {
       toast({
         title: "Error",
@@ -127,6 +130,11 @@ const Search = () => {
       });
     }
   };
+
+  const handleMatchClose = () => {
+    setIsMatchOpen(false);
+    setMatchDog(null);
+  }
 
   return (
     <Box p="4">
@@ -172,39 +180,6 @@ const Search = () => {
             </Button>
           </Box>
         </Flex>
-
-        {matchDog && (
-          <Box p="4" borderWidth="1px" borderRadius="md" bg="purple.50" mb="4">
-            <Text fontSize="lg" fontWeight="bold" mb="2">
-              🎉 Your Matched Dog! 🎉
-            </Text>
-            <Flex align="center">
-              <Image
-                src={matchDog.img}
-                alt={matchDog.name}
-                boxSize="100px"
-                objectFit="cover"
-                borderRadius="md"
-                mr="4"
-              />
-              <VStack align="start" spacing="1">
-                <Text>
-                  <strong>Name:</strong> {matchDog.name}
-                </Text>
-                <Text>
-                  <strong>Breed:</strong> {matchDog.breed}
-                </Text>
-                <Text>
-                  <strong>Age:</strong> {matchDog.age} year
-                  {matchDog.age > 1 ? "s" : ""}
-                </Text>
-                <Text>
-                  <strong>Zip Code:</strong> {matchDog.zip_code}
-                </Text>
-              </VStack>
-            </Flex>
-          </Box>
-        )}
 
         {loading ? (
           <Center py="20">
@@ -298,6 +273,11 @@ const Search = () => {
         )}
       </VStack>
       <FavoritesDrawer />
+      <MatchResultModal
+        isOpen={isMatchOpen}
+        onClose={handleMatchClose}
+        matchDog={matchDog}
+      />
     </Box>
   );
 };
