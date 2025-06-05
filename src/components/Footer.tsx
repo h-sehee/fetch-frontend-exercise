@@ -1,20 +1,22 @@
 import React from "react";
+import { Box, Text } from "@chakra-ui/react";
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
-    <footer
-      style={{
-        marginTop: "auto",
-        padding: "1rem 2rem",
-        borderTop: "1px solid #ddd",
-        textAlign: "center",
-        backgroundColor: "#fafafa",
-        fontSize: "0.875rem",
-        color: "#666",
-      }}
-    >
-      © 2025 Fetch Dog Matcher. All rights reserved.
-    </footer>
+    <Box
+          as="footer"
+          mt="auto"
+          py="4"
+          px="8"
+          borderTop="1px solid"
+          borderColor="gray.200"
+          bg="#300d3811"
+          textAlign="center"
+        >
+          <Text fontSize="sm" color="darkBrand.500">
+            © 2025 Fetch Dog Matcher. All rights reserved.
+          </Text>
+        </Box>
   );
 };
 
