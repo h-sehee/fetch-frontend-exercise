@@ -30,7 +30,8 @@ const NavBar: React.FC = () => {
       justify="space-between"
       px="6"
       py="4"
-      bg="white"
+      bg="darkBrand.500"
+      color="white"
       boxShadow="sm"
       position="sticky"
       top="0"
@@ -43,9 +44,11 @@ const NavBar: React.FC = () => {
       <HStack spacing="4">
         <Button
           variant="ghost"
-          leftIcon={<Icon as={FiStar as React.ElementType} />}
+          leftIcon={<Icon as={FiStar as React.ElementType} boxSize={5} color="accent.500"/>}
           onClick={openFavorites}
           position="relative"
+          color="white"
+          _hover={{ bg: "rgba(255,255,255,0.1)" }}
         >
           Favorites
           {favorites.size > 0 && (
@@ -54,7 +57,7 @@ const NavBar: React.FC = () => {
               position="absolute"
               top="-1"
               right="-1"
-              bg="red.500"
+              bg="accent.500"
               color="white"
               borderRadius="full"
               fontSize="xs"
@@ -67,7 +70,7 @@ const NavBar: React.FC = () => {
         </Button>
 
         {isLoggedIn && location.pathname !== "/" && (
-          <Button size="sm" colorScheme="red" onClick={handleLogout}>
+          <Button size="sm" colorScheme="brand" onClick={handleLogout}>
             Logout
           </Button>
         )}
