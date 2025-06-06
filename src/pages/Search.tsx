@@ -50,9 +50,10 @@ import FilterPopover from "../components/FilterPopover";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { US_STATES } from "../components/FilterPopover";
 
-const PAGE_SIZE = 10;
-
 const Search: React.FC = () => {
+  const PAGE_SIZE =
+    useBreakpointValue({ base: 10, md: 20  }) ?? 10;
+
   const toast = useToast();
 
   const [breeds, setBreeds] = useState<string[]>([]);
@@ -675,13 +676,15 @@ const Search: React.FC = () => {
                     opacity={0.8}
                   >
                     <Box>
-                      <Text fontSize="xs" whiteSpace="pre-wrap" fontWeight="bold">
+                      <Text
+                        fontSize="xs"
+                        whiteSpace="pre-wrap"
+                        fontWeight="bold"
+                      >
                         {zipToLocation[dog.zip_code]?.city},{" "}
                         {zipToLocation[dog.zip_code]?.county}
                       </Text>
-                      <Text fontSize="xs">
-                        {dog.zip_code}
-                      </Text>
+                      <Text fontSize="xs">{dog.zip_code}</Text>
                     </Box>
                     <IconButton
                       aria-label="Filter by state"
