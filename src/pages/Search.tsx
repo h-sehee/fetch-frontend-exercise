@@ -18,7 +18,6 @@ import {
   GridItem,
   IconButton,
   Image,
-  Select,
   Spinner,
   useToast,
   Text,
@@ -35,20 +34,27 @@ import {
   Popover,
   PopoverTrigger,
   PopoverArrow,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuOptionGroup,
+  MenuItemOption,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import {
+  FaCaretDown,
+  FaCaretUp,
   FaPaw,
-  FaSortAlphaDown,
-  FaSortAlphaUp,
-  FaSortNumericDown,
-  FaSortNumericUp,
 } from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
 import FilterPopover from "../components/FilterPopover";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@chakra-ui/icons";
 
 const PAGE_SIZE = 10;
 
@@ -348,42 +354,64 @@ const Search: React.FC = () => {
           />
 
           <HStack spacing="4" flexShrink={0} whiteSpace={"nowrap"}>
-            <Text fontWeight="semibold" mb="1">
-              Sort By:
-            </Text>
-            <Select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as "breed" | "name" | "age");
-                setFrom(0);
-              }}
-              focusBorderColor="accent.500"
-            >
-              <option value="breed">Breed</option>
-              <option value="name">Name</option>
-              <option value="age">Age</option>
-            </Select>
-            <Button
-              size="sm"
-              onClick={() =>
-                setSortDir((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              colorScheme="brand"
-              variant="solid"
-            >
-              <Icon
-                as={
-                  sortBy === "age"
-                    ? sortDir === "asc"
-                      ? (FaSortNumericDown as React.ElementType)
-                      : (FaSortNumericUp as React.ElementType)
-                    : sortDir === "asc"
-                    ? (FaSortAlphaDown as React.ElementType)
-                    : (FaSortAlphaUp as React.ElementType)
+            <Menu>
+              <MenuButton
+                as={Button}
+                variant="outline"
+                colorScheme="accent"
+                rightIcon={
+                  <Icon
+                    as={
+                      sortDir === "asc"
+                        ? (FaCaretDown as React.ElementType)
+                        : (FaCaretUp as React.ElementType)
+                    }
+                    boxSize={5}
+                  />
                 }
-                boxSize={5}
-              />
-            </Button>
+              >
+                Sort By: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
+              </MenuButton>
+              <MenuList bg="white">
+                <MenuOptionGroup
+                  defaultValue={sortDir}
+                  title="Order"
+                  type="radio"
+                >
+                  <MenuItemOption value="asc" onClick={() => setSortDir("asc")}>
+                    Ascending
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="desc"
+                    onClick={() => setSortDir("desc")}
+                  >
+                    Descending
+                  </MenuItemOption>
+                </MenuOptionGroup>
+                <MenuDivider />
+                <MenuOptionGroup
+                  defaultValue={sortBy}
+                  title="Sort By"
+                  type="radio"
+                >
+                  <MenuItemOption
+                    value="breed"
+                    onClick={() => setSortBy("breed")}
+                  >
+                    Breed
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="name"
+                    onClick={() => setSortBy("name")}
+                  >
+                    Name
+                  </MenuItemOption>
+                  <MenuItemOption value="age" onClick={() => setSortBy("age")}>
+                    Age
+                  </MenuItemOption>
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
           </HStack>
 
           <Box></Box>
@@ -438,7 +466,7 @@ const Search: React.FC = () => {
                   colorScheme="brand"
                 >
                   <TagLabel>
-                    ZIP: {userZip} | ~{radiusMeters} m
+                    ZIP: {userZip} | ~{radiusMeters / 1000} km
                   </TagLabel>
                   <TagCloseButton
                     onClick={() => {
@@ -460,12 +488,6 @@ const Search: React.FC = () => {
           </Center>
         ) : (
           <>
-            <Text mb="2">
-              {`Total results: ${total}. Showing ${dogResults.length} item${
-                dogResults.length !== 1 ? "s" : ""
-              }.`}
-            </Text>
-
             <Grid
               templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
               gap="6"
@@ -474,31 +496,65 @@ const Search: React.FC = () => {
                 <GridItem
                   key={dog.id}
                   borderWidth="1px"
-                  borderRadius="md"
+                  borderRadius="lg"
                   overflow="hidden"
                   position="relative"
-                  _hover={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                  boxShadow="sm"
+                  _hover={{ boxShadow: "md" }}
                 >
                   <Image
                     src={dog.img}
                     alt={dog.name}
-                    boxSize="150px"
+                    boxSize="200px"
                     objectFit="cover"
                     w="100%"
                   />
                   <Box p="4">
-                    <Text fontWeight="semibold" fontSize="lg" noOfLines={1}>
-                      {dog.name}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Breed: {dog.breed}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Age: {dog.age} year{dog.age > 1 ? "s" : ""}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Zip: {dog.zip_code}
-                    </Text>
+                    <VStack align="start" spacing="2">
+                      <Text fontWeight="bold" fontSize="lg">
+                        {dog.name}
+                      </Text>
+
+                      <HStack spacing={1} wrap="wrap">
+                        <Tag
+                          colorScheme="blue"
+                          size="sm"
+                          cursor="pointer"
+                          onClick={() => {
+                            setSelectedBreeds([dog.breed]);
+                            setFrom(0);
+                          }}
+                        >
+                          {dog.breed}
+                        </Tag>
+                      </HStack>
+
+                      <HStack spacing={1}>
+                        <Tag
+                          size="sm"
+                          colorScheme={
+                            dog.age <= 2
+                              ? "green"
+                              : dog.age <= 8
+                              ? "yellow"
+                              : "red"
+                          }
+                          cursor="pointer"
+                          onClick={() => {
+                            if (dog.age <= 2) setAgeRange([0, 2]);
+                            else if (dog.age <= 8) setAgeRange([3, 8]);
+                            else setAgeRange([9, maxAge]);
+                            setFrom(0);
+                          }}
+                        >
+                          {dog.age} yrs
+                        </Tag>
+                      </HStack>
+
+                      <Text fontSize="xs" color="gray.500">
+                        ZIP: {dog.zip_code}
+                      </Text>
+                    </VStack>
                   </Box>
                   <IconButton
                     aria-label="Favorite"

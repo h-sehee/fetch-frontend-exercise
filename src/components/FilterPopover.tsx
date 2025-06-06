@@ -28,7 +28,8 @@ import {
   Tag,
   Wrap,
 } from "@chakra-ui/react";
-import { FaFilter } from "react-icons/fa";
+import { IoFilter } from "react-icons/io5";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 interface FilterPopoverProps {
   allBreeds: string[];
@@ -100,27 +101,38 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     onChangeUserZip(tempZip.trim());
   };
 
-
   return (
     <Popover placement="bottom-start" closeOnBlur>
       <PopoverTrigger>
-        <Button colorScheme="brand" leftIcon={<Icon as={FaFilter as React.ElementType} color="white" />} rightIcon={<Box as="span" ml="2">▾</Box>}>
+        <Button
+          colorScheme="brand"
+          leftIcon={
+            <Icon
+              as={IoFilter as React.ElementType}
+              color="white"
+              boxSize={5}
+            />
+          }
+          rightIcon={<ChevronDownIcon boxSize={5} />}
+        >
           Filters
-          
         </Button>
       </PopoverTrigger>
 
       <PopoverContent width="320px">
         <PopoverArrow />
-        
 
         <PopoverHeader>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Text fontWeight="bold" fontSize="lg">
-                Filters
-              </Text>
-              <PopoverCloseButton position="static" />
-            </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Text fontWeight="bold" fontSize="lg">
+              Filters
+            </Text>
+            <PopoverCloseButton position="static" />
+          </Box>
         </PopoverHeader>
 
         <Divider />
@@ -145,9 +157,14 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   onChange={(e) => setBreedSearch(e.target.value)}
                   focusBorderColor="accent.500"
                 />
-                <Button size="sm" variant="outline" mb="2" onClick={() => onChangeBreeds([])}>
-                    All Breeds
-                  </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  mb="2"
+                  onClick={() => onChangeBreeds([])}
+                >
+                  All Breeds
+                </Button>
 
                 <CheckboxGroup
                   colorScheme="brand"
@@ -231,7 +248,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   {[5, 50, 100, 500, 1000].map((km) => {
                     const meters = km * 1000;
                     const isActive = radiusMeters === meters;
-                
+
                     return (
                       <Tag
                         key={km}
