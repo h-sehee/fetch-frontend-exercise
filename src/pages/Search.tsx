@@ -48,6 +48,7 @@ import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
 import FilterPopover from "../components/FilterPopover";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { US_STATES } from "../components/FilterPopover";
 
 const PAGE_SIZE = 10;
 
@@ -62,8 +63,12 @@ const Search: React.FC = () => {
   const [ageRange, setAgeRange] = useState<[number, number]>([0, 0]);
 
   const [userZip, setUserZip] = useState<string>("");
+  const [zipToLocation, setZipToLocation] = useState<Record<string, Location>>(
+    {}
+  );
   const [radiusMeters, setRadiusMeters] = useState<number>(1000);
   const [zipCodesInRadius, setZipCodesInRadius] = useState<string[]>([]);
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
   const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">(
     "breed"
@@ -223,6 +228,27 @@ const Search: React.FC = () => {
     fetchNearbyZips();
   }, [userZip, radiusMeters]);
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const zips = Array.from(
+        new Set(dogResults.map((d) => d.zip_code))
+      ).filter(Boolean);
+      if (zips.length === 0) return;
+      try {
+        const locations = await fetchLocationsByZip(zips);
+        const map: Record<string, Location> = {};
+        for (const loc of locations) {
+          map[loc.zip_code] = loc;
+        }
+        setZipToLocation(map);
+      } catch (err) {
+        console.error("Failed to fetch location data", err);
+      }
+    };
+
+    fetchLocations();
+  }, [dogResults]);
+
   const goNext = () => {
     if (from + PAGE_SIZE < total) {
       setFrom((prev) => prev + PAGE_SIZE);
@@ -318,32 +344,59 @@ const Search: React.FC = () => {
   return (
     <Box p="4">
       <VStack align="stretch" spacing="6">
-        <HStack wrap="wrap" align="flex-end" spacing="8">
-          <FilterPopover
-            allBreeds={breeds}
-            selectedBreeds={selectedBreeds}
-            onChangeBreeds={(vals) => {
-              setSelectedBreeds(vals);
-              setFrom(0);
-            }}
-            minAge={minAge}
-            maxAge={maxAge}
-            ageRange={ageRange}
-            onChangeAgeRange={(range) => {
-              setAgeRange(range);
-              setFrom(0);
-            }}
-            userZip={userZip}
-            onChangeUserZip={(zip) => {
-              setUserZip(zip);
-              setFrom(0);
-            }}
-            radiusMeters={radiusMeters}
-            onChangeRadius={(meters) => {
-              setRadiusMeters(meters);
-              setFrom(0);
-            }}
-          />
+        <Flex justify="space-between" align="center" wrap="wrap" gap={2} mb={3}>
+          <HStack spacing="4">
+            <FilterPopover
+              allBreeds={breeds}
+              selectedBreeds={selectedBreeds}
+              onChangeBreeds={(vals) => {
+                setSelectedBreeds(vals);
+                setFrom(0);
+              }}
+              minAge={minAge}
+              maxAge={maxAge}
+              ageRange={ageRange}
+              onChangeAgeRange={(range) => {
+                setAgeRange(range);
+                setFrom(0);
+              }}
+              userZip={userZip}
+              onChangeUserZip={(zip) => {
+                setUserZip(zip);
+                setFrom(0);
+              }}
+              radiusMeters={radiusMeters}
+              onChangeRadius={(meters) => {
+                setRadiusMeters(meters);
+                setFrom(0);
+              }}
+              selectedStates={selectedStates}
+              onChangeStates={(states) => {
+                setSelectedStates(states);
+                setFrom(0);
+              }}
+            />
+            {(selectedBreeds.length > 0 ||
+              !(ageRange[0] === minAge && ageRange[1] === maxAge) ||
+              selectedStates.length > 0 ||
+              userZip) && (
+              <Button
+                size="sm"
+                variant="ghost"
+                colorScheme="red"
+                onClick={() => {
+                  setSelectedBreeds([]);
+                  setAgeRange([minAge, maxAge]);
+                  setUserZip("");
+                  setSelectedStates([]);
+                  setZipCodesInRadius([]);
+                  setFrom(0);
+                }}
+              >
+                Clear All
+              </Button>
+            )}
+          </HStack>
 
           <HStack spacing="4" flexShrink={0} whiteSpace={"nowrap"}>
             <Menu>
@@ -405,9 +458,7 @@ const Search: React.FC = () => {
               </MenuList>
             </Menu>
           </HStack>
-
-          <Box></Box>
-        </HStack>
+        </Flex>
         <HStack wrap="wrap" spacing="2" mb="2">
           <Box>
             <HStack spacing="2" flexWrap="wrap">
@@ -449,7 +500,28 @@ const Search: React.FC = () => {
                   />
                 </Tag>
               )}
-
+              {selectedStates.map((abbr) => {
+                const stateObj = US_STATES.find((s) => s.code === abbr);
+                return (
+                  <Tag
+                    key={abbr}
+                    size="md"
+                    borderRadius="full"
+                    variant="solid"
+                    colorScheme="brand"
+                  >
+                    <TagLabel>{stateObj?.name || abbr}</TagLabel>
+                    <TagCloseButton
+                      onClick={() => {
+                        setSelectedStates((prev) =>
+                          prev.filter((s) => s !== abbr)
+                        );
+                        setFrom(0);
+                      }}
+                    />
+                  </Tag>
+                );
+              })}
               {userZip && (
                 <Tag
                   size="md"
@@ -468,24 +540,6 @@ const Search: React.FC = () => {
                     }}
                   />
                 </Tag>
-              )}
-              {(selectedBreeds.length > 0 ||
-                !(ageRange[0] === minAge && ageRange[1] === maxAge) ||
-                userZip) && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  colorScheme="red"
-                  onClick={() => {
-                    setSelectedBreeds([]);
-                    setAgeRange([minAge, maxAge]);
-                    setUserZip("");
-                    setZipCodesInRadius([]);
-                    setFrom(0);
-                  }}
-                >
-                  Clear All
-                </Button>
               )}
             </HStack>
           </Box>
@@ -559,11 +613,50 @@ const Search: React.FC = () => {
                           {dog.age} yrs
                         </Tag>
                       </HStack>
-
-                      <Text fontSize="xs" color="gray.500">
-                        ZIP: {dog.zip_code}
-                      </Text>
                     </VStack>
+                  </Box>
+                  <Box
+                    mt={2}
+                    bg="darkBrand.500"
+                    color="white"
+                    px={3}
+                    py={2}
+                    borderBottomRadius="md"
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Box>
+                      <Text fontSize="xs" fontWeight="medium">
+                        {zipToLocation[dog.zip_code]?.city},{" "}
+                        {zipToLocation[dog.zip_code]?.county}
+                      </Text>
+                      <Text
+                        fontSize="xs"
+                        whiteSpace="pre-wrap"
+                      >
+                        {dog.zip_code}
+                      </Text>
+                    </Box>
+                    <IconButton
+                      aria-label="Filter by state"
+                      icon={
+                        <Text fontSize="xs">
+                          {zipToLocation[dog.zip_code]?.state}
+                        </Text>
+                      }
+                      size="xs"
+                      borderRadius="full"
+                      variant="ghost"
+                      colorScheme="whiteAlpha"
+                      onClick={() => {
+                        const state = zipToLocation[dog.zip_code]?.state;
+                        if (state && !selectedStates.includes(state)) {
+                          setSelectedStates((prev) => [...prev, state]);
+                          setFrom(0);
+                        }
+                      }}
+                    />
                   </Box>
                   <IconButton
                     aria-label="Favorite"
@@ -607,10 +700,7 @@ const Search: React.FC = () => {
                   page === "..." ? (
                     <Popover placement="top">
                       <PopoverTrigger>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                        >
+                        <Button variant="ghost" size="sm">
                           ...
                         </Button>
                       </PopoverTrigger>
