@@ -18,7 +18,6 @@ import {
   GridItem,
   IconButton,
   Image,
-  Select,
   Spinner,
   useToast,
   Text,
@@ -29,19 +28,33 @@ import {
   Tag,
   TagLabel,
   TagCloseButton,
+  Input,
+  PopoverBody,
+  PopoverContent,
+  Popover,
+  PopoverTrigger,
+  PopoverArrow,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuOptionGroup,
+  MenuItemOption,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import {
+  FaCaretDown,
+  FaCaretUp,
   FaPaw,
-  FaSortAlphaDown,
-  FaSortAlphaUp,
-  FaSortNumericDown,
-  FaSortNumericUp,
 } from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
 import FilterPopover from "../components/FilterPopover";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@chakra-ui/icons";
 
 const PAGE_SIZE = 10;
 
@@ -182,40 +195,40 @@ const Search: React.FC = () => {
   ]);
 
   useEffect(() => {
-      const fetchNearbyZips = async () => {
-        if (!userZip) {
+    const fetchNearbyZips = async () => {
+      if (!userZip) {
+        setZipCodesInRadius([]);
+        return;
+      }
+      try {
+        const locations: Location[] = await fetchLocationsByZip([userZip]);
+        if (locations.length === 0) {
           setZipCodesInRadius([]);
           return;
         }
-        try {
-          const locations: Location[] = await fetchLocationsByZip([userZip]);
-          if (locations.length === 0) {
-            setZipCodesInRadius([]);
-            return;
-          }
-          const { latitude: userLat, longitude: userLon } = locations[0];
-  
-          const deltaLat = radiusMeters / 111000;
-          const deltaLon =
-            radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
-  
-          const { results } = await searchLocations({
-            geoBoundingBox: {
-              bottom_left: { lat: userLat - deltaLat, lon: userLon - deltaLon },
-              top_right: { lat: userLat + deltaLat, lon: userLon + deltaLon },
-            },
-            size: 10000,
-          });
-  
-          setZipCodesInRadius(results.map((r) => r.zip_code));
-        } catch (err) {
-          console.error("Error fetching nearby ZIPs:", err);
-          setZipCodesInRadius([]);
-        }
-      };
-  
-      fetchNearbyZips();
-    }, [userZip, radiusMeters]);
+        const { latitude: userLat, longitude: userLon } = locations[0];
+
+        const deltaLat = radiusMeters / 111000;
+        const deltaLon =
+          radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
+
+        const { results } = await searchLocations({
+          geoBoundingBox: {
+            bottom_left: { lat: userLat - deltaLat, lon: userLon - deltaLon },
+            top_right: { lat: userLat + deltaLat, lon: userLon + deltaLon },
+          },
+          size: 10000,
+        });
+
+        setZipCodesInRadius(results.map((r) => r.zip_code));
+      } catch (err) {
+        console.error("Error fetching nearby ZIPs:", err);
+        setZipCodesInRadius([]);
+      }
+    };
+
+    fetchNearbyZips();
+  }, [userZip, radiusMeters]);
 
   const goNext = () => {
     if (from + PAGE_SIZE < total) {
@@ -273,6 +286,43 @@ const Search: React.FC = () => {
     md: "none",
   });
 
+  const currentPage = Math.floor(from / PAGE_SIZE) + 1;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const [showPageInput, setShowPageInput] = useState(false);
+  const [inputPage, setInputPage] = useState(currentPage);
+
+  const getPageNumbers = (): (number | "...")[] => {
+    const pages: (number | "...")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 4) {
+        pages.push(1, 2, 3, 4, 5, "...", totalPages);
+      } else if (currentPage >= totalPages - 3) {
+        pages.push(
+          1,
+          "...",
+          totalPages - 4,
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
+      } else {
+        pages.push(
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPages
+        );
+      }
+    }
+    return pages;
+  };
+
   return (
     <Box p="4">
       <VStack align="stretch" spacing="6">
@@ -304,47 +354,67 @@ const Search: React.FC = () => {
           />
 
           <HStack spacing="4" flexShrink={0} whiteSpace={"nowrap"}>
-            <Text fontWeight="semibold" mb="1">
-              Sort By:
-            </Text>
-            <Select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as "breed" | "name" | "age");
-                setFrom(0);
-              }}
-              focusBorderColor="accent.500"
-            >
-              <option value="breed">Breed</option>
-              <option value="name">Name</option>
-              <option value="age">Age</option>
-            </Select>
-            <Button
-              size="sm"
-              onClick={() =>
-                setSortDir((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              colorScheme="brand"
-              variant="solid"
-            >
-              <Icon
-                as={
-                  sortBy === "age"
-                    ? sortDir === "asc"
-                      ? (FaSortNumericDown as React.ElementType)
-                      : (FaSortNumericUp as React.ElementType)
-                    : sortDir === "asc"
-                    ? (FaSortAlphaDown as React.ElementType)
-                    : (FaSortAlphaUp as React.ElementType)
+            <Menu>
+              <MenuButton
+                as={Button}
+                variant="outline"
+                colorScheme="accent"
+                rightIcon={
+                  <Icon
+                    as={
+                      sortDir === "asc"
+                        ? (FaCaretDown as React.ElementType)
+                        : (FaCaretUp as React.ElementType)
+                    }
+                    boxSize={5}
+                  />
                 }
-                boxSize={5}
-              />
-            </Button>
+              >
+                Sort By: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
+              </MenuButton>
+              <MenuList bg="white">
+                <MenuOptionGroup
+                  defaultValue={sortDir}
+                  title="Order"
+                  type="radio"
+                >
+                  <MenuItemOption value="asc" onClick={() => setSortDir("asc")}>
+                    Ascending
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="desc"
+                    onClick={() => setSortDir("desc")}
+                  >
+                    Descending
+                  </MenuItemOption>
+                </MenuOptionGroup>
+                <MenuDivider />
+                <MenuOptionGroup
+                  defaultValue={sortBy}
+                  title="Sort By"
+                  type="radio"
+                >
+                  <MenuItemOption
+                    value="breed"
+                    onClick={() => setSortBy("breed")}
+                  >
+                    Breed
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="name"
+                    onClick={() => setSortBy("name")}
+                  >
+                    Name
+                  </MenuItemOption>
+                  <MenuItemOption value="age" onClick={() => setSortBy("age")}>
+                    Age
+                  </MenuItemOption>
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
           </HStack>
 
-          <Box>
-            
-          </Box>
+          <Box></Box>
         </HStack>
         <HStack wrap="wrap" spacing="2" mb="2">
           <Box>
@@ -395,7 +465,9 @@ const Search: React.FC = () => {
                   variant="solid"
                   colorScheme="brand"
                 >
-                  <TagLabel>ZIP: {userZip} | ~{radiusMeters} m</TagLabel>
+                  <TagLabel>
+                    ZIP: {userZip} | ~{radiusMeters / 1000} km
+                  </TagLabel>
                   <TagCloseButton
                     onClick={() => {
                       setUserZip("");
@@ -406,7 +478,8 @@ const Search: React.FC = () => {
                 </Tag>
               )}
             </HStack>
-          </Box>s
+          </Box>
+          s
         </HStack>
 
         {loading ? (
@@ -415,12 +488,6 @@ const Search: React.FC = () => {
           </Center>
         ) : (
           <>
-            <Text mb="2">
-              {`Total results: ${total}. Showing ${dogResults.length} item${
-                dogResults.length !== 1 ? "s" : ""
-              }.`}
-            </Text>
-
             <Grid
               templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
               gap="6"
@@ -429,31 +496,65 @@ const Search: React.FC = () => {
                 <GridItem
                   key={dog.id}
                   borderWidth="1px"
-                  borderRadius="md"
+                  borderRadius="lg"
                   overflow="hidden"
                   position="relative"
-                  _hover={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                  boxShadow="sm"
+                  _hover={{ boxShadow: "md" }}
                 >
                   <Image
                     src={dog.img}
                     alt={dog.name}
-                    boxSize="150px"
+                    boxSize="200px"
                     objectFit="cover"
                     w="100%"
                   />
                   <Box p="4">
-                    <Text fontWeight="semibold" fontSize="lg" noOfLines={1}>
-                      {dog.name}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Breed: {dog.breed}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Age: {dog.age} year{dog.age > 1 ? "s" : ""}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Zip: {dog.zip_code}
-                    </Text>
+                    <VStack align="start" spacing="2">
+                      <Text fontWeight="bold" fontSize="lg">
+                        {dog.name}
+                      </Text>
+
+                      <HStack spacing={1} wrap="wrap">
+                        <Tag
+                          colorScheme="blue"
+                          size="sm"
+                          cursor="pointer"
+                          onClick={() => {
+                            setSelectedBreeds([dog.breed]);
+                            setFrom(0);
+                          }}
+                        >
+                          {dog.breed}
+                        </Tag>
+                      </HStack>
+
+                      <HStack spacing={1}>
+                        <Tag
+                          size="sm"
+                          colorScheme={
+                            dog.age <= 2
+                              ? "green"
+                              : dog.age <= 8
+                              ? "yellow"
+                              : "red"
+                          }
+                          cursor="pointer"
+                          onClick={() => {
+                            if (dog.age <= 2) setAgeRange([0, 2]);
+                            else if (dog.age <= 8) setAgeRange([3, 8]);
+                            else setAgeRange([9, maxAge]);
+                            setFrom(0);
+                          }}
+                        >
+                          {dog.age} yrs
+                        </Tag>
+                      </HStack>
+
+                      <Text fontSize="xs" color="gray.500">
+                        ZIP: {dog.zip_code}
+                      </Text>
+                    </VStack>
                   </Box>
                   <IconButton
                     aria-label="Favorite"
@@ -478,27 +579,94 @@ const Search: React.FC = () => {
               ))}
             </Grid>
 
-            <Flex justify="space-between" align="center" mt="6">
-              <Button
-                onClick={goPrev}
-                disabled={from === 0}
-                colorScheme="brand"
-                variant="outline"
-              >
-                Prev
-              </Button>
-              <Text>
-                Page {Math.floor(from / PAGE_SIZE) + 1} of{" "}
-                {Math.ceil(total / PAGE_SIZE) || 1}
+            <Flex
+              justify="center"
+              align="center"
+              mt="6"
+              direction="column"
+              gap="2"
+            >
+              <HStack spacing={1}>
+                <IconButton
+                  icon={<ChevronLeftIcon />}
+                  onClick={goPrev}
+                  isDisabled={from === 0}
+                  aria-label="Previous"
+                />
+
+                {getPageNumbers().map((page, idx) =>
+                  page === "..." ? (
+                    <Popover placement="top">
+                      <PopoverTrigger>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowPageInput(true)}
+                        >
+                          ...
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent w="fit-content">
+                        <PopoverArrow />
+                        <PopoverBody>
+                          <HStack spacing={2}>
+                            <Input
+                              size="sm"
+                              type="number"
+                              value={inputPage}
+                              min={1}
+                              max={totalPages}
+                              onChange={(e) =>
+                                setInputPage(parseInt(e.target.value))
+                              }
+                              w="80px"
+                            />
+                            <Button
+                              size="sm"
+                              colorScheme="brand"
+                              onClick={() => {
+                                const page = Math.max(
+                                  1,
+                                  Math.min(totalPages, inputPage)
+                                );
+                                setFrom((page - 1) * PAGE_SIZE);
+                                setShowPageInput(false);
+                              }}
+                            >
+                              Go
+                            </Button>
+                          </HStack>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <Button
+                      key={page}
+                      colorScheme={page === currentPage ? "brand" : "gray"}
+                      variant={page === currentPage ? "solid" : "ghost"}
+                      size="sm"
+                      onClick={() => setFrom((page - 1) * PAGE_SIZE)}
+                    >
+                      {page}
+                    </Button>
+                  )
+                )}
+
+                <IconButton
+                  icon={<ChevronRightIcon />}
+                  onClick={goNext}
+                  isDisabled={from + PAGE_SIZE >= total}
+                  aria-label="Next"
+                />
+              </HStack>
+
+              <Text fontSize="sm" color="gray.600" whiteSpace="nowrap" mt="2">
+                Showing{" "}
+                <b>
+                  {from + 1}–{Math.min(from + PAGE_SIZE, total)}
+                </b>{" "}
+                of <b>{total}</b> results
               </Text>
-              <Button
-                onClick={goNext}
-                disabled={from + PAGE_SIZE >= total}
-                colorScheme="brand"
-                variant="outline"
-              >
-                Next
-              </Button>
             </Flex>
           </>
         )}
