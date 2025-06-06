@@ -609,6 +609,8 @@ const Search: React.FC = () => {
                   position="relative"
                   boxShadow="sm"
                   _hover={{ boxShadow: "md" }}
+                  display="flex"
+                  flexDirection="column"
                 >
                   <Image
                     src={dog.img}
@@ -617,7 +619,7 @@ const Search: React.FC = () => {
                     objectFit="cover"
                     w="100%"
                   />
-                  <Box p="4">
+                  <Box p="4" flex="1">
                     <VStack align="start" spacing="2">
                       <Text fontWeight="bold" fontSize="lg">
                         {dog.name}
@@ -661,7 +663,7 @@ const Search: React.FC = () => {
                     </VStack>
                   </Box>
                   <Box
-                    mt={2}
+                    mt="auto"
                     bg="darkBrand.500"
                     color="white"
                     px={3}
@@ -672,11 +674,11 @@ const Search: React.FC = () => {
                     alignItems="center"
                   >
                     <Box>
-                      <Text fontSize="xs" fontWeight="medium">
+                      <Text fontSize="xs" whiteSpace="pre-wrap" fontWeight="bold">
                         {zipToLocation[dog.zip_code]?.city},{" "}
                         {zipToLocation[dog.zip_code]?.county}
                       </Text>
-                      <Text fontSize="xs" whiteSpace="pre-wrap">
+                      <Text fontSize="xs">
                         {dog.zip_code}
                       </Text>
                     </Box>
@@ -689,7 +691,6 @@ const Search: React.FC = () => {
                       }
                       size="xs"
                       borderRadius="full"
-                      variant="ghost"
                       colorScheme="whiteAlpha"
                       onClick={() => {
                         const state = zipToLocation[dog.zip_code]?.state;
@@ -698,6 +699,8 @@ const Search: React.FC = () => {
                           setFrom(0);
                         }
                       }}
+                      _hover={{ transform: "scale(1.1)" }}
+                      transition="transform 0.1s"
                     />
                   </Box>
                   <IconButton
