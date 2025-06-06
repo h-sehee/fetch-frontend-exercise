@@ -672,6 +672,7 @@ const Search: React.FC = () => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
+                    opacity={0.8}
                   >
                     <Box>
                       <Text fontSize="xs" whiteSpace="pre-wrap" fontWeight="bold">

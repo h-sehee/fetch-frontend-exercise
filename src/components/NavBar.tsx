@@ -60,7 +60,7 @@ const NavBar: React.FC = () => {
           color="white"
           _hover={{ bg: "rgba(255,255,255,0.1)" }}
         >
-          Favorites
+          Barkmarks
           {favorites.size > 0 && (
             <Box
               as="span"
