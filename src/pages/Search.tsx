@@ -42,19 +42,12 @@ import {
   MenuDivider,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
-import {
-  FaCaretDown,
-  FaCaretUp,
-  FaPaw,
-} from "react-icons/fa";
+import { FaCaretDown, FaCaretUp, FaPaw } from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
 import FavoritesDrawer from "../components/FavoritesDrawer";
 import MatchResultModal from "../components/MatchResultModal";
 import FilterPopover from "../components/FilterPopover";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 const PAGE_SIZE = 10;
 
@@ -363,8 +356,8 @@ const Search: React.FC = () => {
                   <Icon
                     as={
                       sortDir === "asc"
-                        ? (FaCaretDown as React.ElementType)
-                        : (FaCaretUp as React.ElementType)
+                        ? (FaCaretUp as React.ElementType)
+                        : (FaCaretDown as React.ElementType)
                     }
                     boxSize={5}
                   />
@@ -477,9 +470,26 @@ const Search: React.FC = () => {
                   />
                 </Tag>
               )}
+              {(selectedBreeds.length > 0 ||
+                !(ageRange[0] === minAge && ageRange[1] === maxAge) ||
+                userZip) && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  colorScheme="red"
+                  onClick={() => {
+                    setSelectedBreeds([]);
+                    setAgeRange([minAge, maxAge]);
+                    setUserZip("");
+                    setZipCodesInRadius([]);
+                    setFrom(0);
+                  }}
+                >
+                  Clear All
+                </Button>
+              )}
             </HStack>
           </Box>
-          s
         </HStack>
 
         {loading ? (
