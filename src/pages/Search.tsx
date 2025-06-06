@@ -69,6 +69,7 @@ const Search: React.FC = () => {
   const [radiusMeters, setRadiusMeters] = useState<number>(1000);
   const [zipCodesInRadius, setZipCodesInRadius] = useState<string[]>([]);
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
+  const [stateZips, setStateZips] = useState<string[]>([]);
 
   const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">(
     "breed"
@@ -143,6 +144,22 @@ const Search: React.FC = () => {
 
         const [minFilter, maxFilter] = ageRange;
 
+        let zipFilter: string[] | undefined;
+
+        if (zipCodesInRadius.length > 0 && stateZips.length > 0) {
+          zipFilter = zipCodesInRadius.filter((z) => stateZips.includes(z));
+        } else if (zipCodesInRadius.length > 0) {
+          zipFilter = zipCodesInRadius;
+        } else if (stateZips.length > 0) {
+          zipFilter = stateZips;
+        } else {
+          zipFilter = [];
+        }
+
+        if (zipFilter && zipFilter.length > 1000) {
+          zipFilter = zipFilter.slice(0, 1000);
+        }
+
         const response = await searchDogs(
           selectedBreeds,
           PAGE_SIZE,
@@ -150,7 +167,7 @@ const Search: React.FC = () => {
           sortParam,
           minFilter > minAge ? minFilter : undefined,
           maxFilter < maxAge ? maxFilter : undefined,
-          zipCodesInRadius
+          zipFilter
         );
 
         setTotal(response.total);
@@ -184,6 +201,7 @@ const Search: React.FC = () => {
     selectedBreeds,
     ageRange,
     zipCodesInRadius,
+    stateZips,
     sortBy,
     sortDir,
     from,
@@ -191,6 +209,29 @@ const Search: React.FC = () => {
     maxAge,
     toast,
   ]);
+
+  useEffect(() => {
+    const fetchStateZips = async () => {
+      if (!selectedStates) {
+        setStateZips([]);
+        return;
+      }
+      try {
+        const { results } = await searchLocations({
+          states: selectedStates,
+          size: 10000,
+        });
+        setStateZips(results.map((r) => r.zip_code));
+
+        setStateZips(results.map((r) => r.zip_code));
+      } catch (err) {
+        console.error("Error fetching nearby ZIPs:", err);
+        setStateZips([]);
+      }
+    };
+
+    fetchStateZips();
+  }, [selectedStates]);
 
   useEffect(() => {
     const fetchNearbyZips = async () => {
@@ -388,8 +429,10 @@ const Search: React.FC = () => {
                   setSelectedBreeds([]);
                   setAgeRange([minAge, maxAge]);
                   setUserZip("");
-                  setSelectedStates([]);
+                  setRadiusMeters(0);
                   setZipCodesInRadius([]);
+                  setSelectedStates([]);
+                  setStateZips([]);
                   setFrom(0);
                 }}
               >
@@ -516,6 +559,7 @@ const Search: React.FC = () => {
                         setSelectedStates((prev) =>
                           prev.filter((s) => s !== abbr)
                         );
+                        setStateZips([]);
                         setFrom(0);
                       }}
                     />
@@ -535,6 +579,7 @@ const Search: React.FC = () => {
                   <TagCloseButton
                     onClick={() => {
                       setUserZip("");
+                      setRadiusMeters(0);
                       setZipCodesInRadius([]);
                       setFrom(0);
                     }}
@@ -631,10 +676,7 @@ const Search: React.FC = () => {
                         {zipToLocation[dog.zip_code]?.city},{" "}
                         {zipToLocation[dog.zip_code]?.county}
                       </Text>
-                      <Text
-                        fontSize="xs"
-                        whiteSpace="pre-wrap"
-                      >
+                      <Text fontSize="xs" whiteSpace="pre-wrap">
                         {dog.zip_code}
                       </Text>
                     </Box>
