@@ -65,7 +65,6 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   const [tempAgeRange, setTempAgeRange] = useState<[number, number]>(ageRange);
 
   const [tempZip, setTempZip] = useState<string>(userZip);
-  const [tempRadius, setTempRadius] = useState<number>(radiusMeters);
 
   useEffect(() => {
     setTempAgeRange(ageRange);
@@ -81,7 +80,6 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
 
   useEffect(() => {
     setTempZip(userZip);
-    setTempRadius(radiusMeters);
   }, [userZip, radiusMeters]);
 
   const filteredBreeds = allBreeds.filter((b) =>
