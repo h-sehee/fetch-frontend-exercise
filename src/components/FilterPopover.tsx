@@ -25,6 +25,8 @@ import {
   RangeSliderFilledTrack,
   RangeSliderThumb,
   Icon,
+  Tag,
+  Wrap,
 } from "@chakra-ui/react";
 import { FaFilter } from "react-icons/fa";
 
@@ -98,9 +100,6 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     onChangeUserZip(tempZip.trim());
   };
 
-  const handleRadiusChangeEnd = (val: number) => {
-    onChangeRadius(val);
-  };
 
   return (
     <Popover placement="bottom-start" closeOnBlur>
@@ -113,10 +112,15 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
 
       <PopoverContent width="320px">
         <PopoverArrow />
-        <PopoverCloseButton />
+        
 
-        <PopoverHeader fontWeight="bold" fontSize="lg">
-          Filters
+        <PopoverHeader>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Text fontWeight="bold" fontSize="lg">
+                Filters
+              </Text>
+              <PopoverCloseButton position="static" />
+            </Box>
         </PopoverHeader>
 
         <Divider />
@@ -141,6 +145,9 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   onChange={(e) => setBreedSearch(e.target.value)}
                   focusBorderColor="accent.500"
                 />
+                <Button size="sm" variant="outline" mb="2" onClick={() => onChangeBreeds([])}>
+                    All Breeds
+                  </Button>
 
                 <CheckboxGroup
                   colorScheme="brand"
@@ -168,14 +175,14 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
               <h2>
                 <AccordionButton>
                   <Box flex="1" textAlign="left" fontWeight="semibold">
-                    Age (years)
+                    Age
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
               <AccordionPanel pb={4}>
                 <Text fontSize="sm" mb="1">
-                  {tempAgeRange[0]} – {tempAgeRange[1]}
+                  {tempAgeRange[0]} – {tempAgeRange[1]} years
                 </Text>
                 <RangeSlider
                   min={minAge}
@@ -217,25 +224,30 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   focusBorderColor="accent.500"
                 />
 
-                <Text fontSize="sm" mb="1">
-                  Radius (meters)
+                <Text fontSize="sm" mb="2">
+                  Radius
                 </Text>
-                <Box mb="1" fontSize="sm">
-                  {tempRadius} m
-                </Box>
-                <RangeSlider
-                  min={500}
-                  max={50000}
-                  step={500}
-                  value={[tempRadius]}
-                  onChange={(val) => setTempRadius(val[0])}
-                  onChangeEnd={(val) => handleRadiusChangeEnd(val[0])}
-                >
-                  <RangeSliderTrack>
-                    <RangeSliderFilledTrack bg="brand.500" />
-                  </RangeSliderTrack>
-                  <RangeSliderThumb index={0} boxSize={4} bg="accent.500" />
-                </RangeSlider>
+                <Wrap spacing={3}>
+                  {[5, 50, 100, 500, 1000].map((km) => {
+                    const meters = km * 1000;
+                    const isActive = radiusMeters === meters;
+                
+                    return (
+                      <Tag
+                        key={km}
+                        size="md"
+                        variant={isActive ? "solid" : "subtle"}
+                        colorScheme={isActive ? "brand" : "gray"}
+                        cursor="pointer"
+                        onClick={() => {
+                          onChangeRadius(meters);
+                        }}
+                      >
+                        {km} km
+                      </Tag>
+                    );
+                  })}
+                </Wrap>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
