@@ -281,7 +281,6 @@ const Search: React.FC = () => {
 
   const currentPage = Math.floor(from / PAGE_SIZE) + 1;
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  const [showPageInput, setShowPageInput] = useState(false);
   const [inputPage, setInputPage] = useState(currentPage);
 
   const getPageNumbers = (): (number | "...")[] => {
@@ -611,7 +610,6 @@ const Search: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setShowPageInput(true)}
                         >
                           ...
                         </Button>
@@ -640,7 +638,6 @@ const Search: React.FC = () => {
                                   Math.min(totalPages, inputPage)
                                 );
                                 setFrom((page - 1) * PAGE_SIZE);
-                                setShowPageInput(false);
                               }}
                             >
                               Go
