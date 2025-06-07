@@ -19,6 +19,7 @@ import {
 import { useFavorites } from "../context/FavoritesContext";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { Location, fetchLocationsByZip } from "../api";
+import { useDogLocations } from "../hooks/useDogLocation";
 
 const FavoritesDrawer: React.FC = () => {
   const {
@@ -29,35 +30,10 @@ const FavoritesDrawer: React.FC = () => {
     toggleFavorite,
   } = useFavorites();
 
-  const [dogLocations, setDogLocations] = useState<Record<string, Location>>(
-    {}
-  );
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      setLoading(true);
-      const zips = Array.from(
-        new Set(favoriteDogsDetails.map((d) => d.zip_code))
-      ).filter(Boolean);
-      if (zips.length === 0) return;
-      try {
-        const locations = await fetchLocationsByZip(zips);
-        const map: Record<string, Location> = {};
-        for (const loc of locations) {
-          if (!loc) continue;
-          map[loc.zip_code] = loc;
-        }
-        setDogLocations(map);
-      } catch (err) {
-        console.error("Failed to fetch location data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLocations();
-  }, [favoriteDogsDetails]);
+  const zips = Array.from(
+      new Set(favoriteDogsDetails.map(d => d.zip_code))
+    ).filter(Boolean);
+    const { locationsMap: dogLocations, loading: loading } = useDogLocations(zips);
 
   return (
     <Drawer
