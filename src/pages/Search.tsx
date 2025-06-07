@@ -689,7 +689,7 @@ const Search: React.FC = () => {
                             setFrom(0);
                           }}
                         >
-                          {dog.age} yrs
+                          {dog.age} yr{dog.age > 1 ? "s" : ""}
                         </Tag>
                       </HStack>
                     </VStack>

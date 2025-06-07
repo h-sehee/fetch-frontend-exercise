@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerBody,
@@ -15,12 +15,10 @@ import {
   Flex,
   Icon,
   Tag,
-  // useDisclosure,
-  // Collapse
 } from "@chakra-ui/react";
 import { useFavorites } from "../context/FavoritesContext";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-// import { Location, fetchLocationsByZip } from "../api";
+import { Location, fetchLocationsByZip } from "../api";
 
 const FavoritesDrawer: React.FC = () => {
   const {
@@ -31,36 +29,35 @@ const FavoritesDrawer: React.FC = () => {
     toggleFavorite,
   } = useFavorites();
 
-  // const { isOpen, onToggle } = useDisclosure();
-  // const [dogLocations, setDogLocations] = useState<Record<string, Location>>(
-  //   {}
-  // );
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [dogLocations, setDogLocations] = useState<Record<string, Location>>(
+    {}
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const fetchLocations = async () => {
-  //     setLoading(true);
-  //     const zips = Array.from(
-  //       new Set(favoriteDogsDetails.map((d) => d.zip_code))
-  //     ).filter(Boolean);
-  //     if (zips.length === 0) return;
-  //     try {
-  //       const locations = await fetchLocationsByZip(zips);
-  //       const map: Record<string, Location> = {};
-  //       for (const loc of locations) {
-  //         if (!loc) continue;
-  //         map[loc.zip_code] = loc;
-  //       }
-  //       setDogLocations(map);
-  //     } catch (err) {
-  //       console.error("Failed to fetch location data", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchLocations = async () => {
+      setLoading(true);
+      const zips = Array.from(
+        new Set(favoriteDogsDetails.map((d) => d.zip_code))
+      ).filter(Boolean);
+      if (zips.length === 0) return;
+      try {
+        const locations = await fetchLocationsByZip(zips);
+        const map: Record<string, Location> = {};
+        for (const loc of locations) {
+          if (!loc) continue;
+          map[loc.zip_code] = loc;
+        }
+        setDogLocations(map);
+      } catch (err) {
+        console.error("Failed to fetch location data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchLocations();
-  // }, [favoriteDogsDetails]);
+    fetchLocations();
+  }, [favoriteDogsDetails]);
 
   return (
     <Drawer
@@ -95,18 +92,15 @@ const FavoritesDrawer: React.FC = () => {
                     objectFit="cover"
                     borderRadius="md"
                   />
-                  <HStack align="center" spacing="2">
-                    <Text fontWeight="bold" fontSize="lg" mr={2}>
+                  <VStack align="start" spacing={1}>
+                    <Text fontWeight="bold" fontSize="lg">
                       {dog.name}
                     </Text>
 
-                    <HStack spacing={1} wrap="wrap">
+                    <HStack spacing={2} wrap="wrap">
                       <Tag colorScheme="blue" size="sm">
                         {dog.breed}
                       </Tag>
-                    </HStack>
-
-                    <HStack spacing={1}>
                       <Tag
                         size="sm"
                         colorScheme={
@@ -117,10 +111,17 @@ const FavoritesDrawer: React.FC = () => {
                             : "red"
                         }
                       >
-                        {dog.age} yrs
+                        {dog.age} yr{dog.age > 1 ? "s" : ""}
                       </Tag>
+                      {loading ? (
+                        <></>
+                      ) : (
+                        <Tag variant="outline" size="sm">
+                          {dogLocations[dog.zip_code]?.state}
+                        </Tag>
+                      )}
                     </HStack>
-                  </HStack>
+                  </VStack>
 
                   <IconButton
                     aria-label={"Drawer"}
@@ -137,12 +138,6 @@ const FavoritesDrawer: React.FC = () => {
                     onClick={() => toggleFavorite(dog.id)}
                     ml="auto"
                   ></IconButton>
-                  {/* <Collapse in={isOpen} animateOpacity>
-                    <Box p={2} bg="darkBrand.500" color="white">
-                      {dogLocations[dog.zip_code]?.city},{" "}
-                      {dogLocations[dog.zip_code]?.state}
-                    </Box>
-                  </Collapse> */}
                 </Flex>
               ))}
             </VStack>
