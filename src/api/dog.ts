@@ -41,14 +41,14 @@ export const searchDogs = async (
     breeds.forEach((b) => params.append("breeds", b));
   }
   if (zipCodes.length > 0) {
-      zipCodes.forEach((z) => params.append("zipCodes", z));
-    }
-    if (typeof ageMin === "number") {
-      params.set("ageMin", ageMin.toString());
-    }
-    if (typeof ageMax === "number") {
-      params.set("ageMax", ageMax.toString());
-    }
+    zipCodes.forEach((z) => params.append("zipCodes", z));
+  }
+  if (typeof ageMin === "number") {
+    params.set("ageMin", ageMin.toString());
+  }
+  if (typeof ageMax === "number") {
+    params.set("ageMax", ageMax.toString());
+  }
   params.append("size", size.toString());
   params.append("from", from.toString());
   params.append("sort", sort);
