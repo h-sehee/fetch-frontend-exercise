@@ -51,7 +51,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { US_STATES } from "../components/FilterPopover";
 
 const Search: React.FC = () => {
-  const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20, xl: 33 }) ?? 10;
+  const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20}) ?? 10;
 
   const toast = useToast();
 
@@ -782,7 +782,7 @@ const Search: React.FC = () => {
 
                 {getPageNumbers().map((page, idx) =>
                   page === "..." ? (
-                    <Popover placement="top">
+                    <Popover placement="top" key={`ellipsis-${idx}`}>
                       <PopoverTrigger>
                         <Button variant="ghost" size="sm">
                           ...
