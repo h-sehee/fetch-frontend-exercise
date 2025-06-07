@@ -12,12 +12,15 @@ import {
   Text,
   Box,
   IconButton,
+  Flex,
+  Icon,
 } from "@chakra-ui/react";
 import { useFavorites } from "../context/FavoritesContext";
 import { CloseIcon } from "@chakra-ui/icons";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const FavoritesDrawer: React.FC = () => {
-  const { favoriteDogsDetails, isFavOpen, closeFavorites, toggleFavorite } =
+  const { favorites, favoriteDogsDetails, isFavOpen, closeFavorites, toggleFavorite } =
     useFavorites();
 
   return (
@@ -29,8 +32,14 @@ const FavoritesDrawer: React.FC = () => {
     >
       <DrawerOverlay />
       <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerHeader borderBottomWidth="1px">My Favorites</DrawerHeader>
+        <DrawerHeader borderBottomWidth="1px">
+          <Flex align="center" justify="space-between">
+            <Text fontWeight="bold" fontSize="xl">
+              My Barkmarks
+            </Text>
+            <DrawerCloseButton position="static" />
+          </Flex>
+        </DrawerHeader>
         <DrawerBody>
           {favoriteDogsDetails.length === 0 ? (
             <Box textAlign="center" py="10">
@@ -48,17 +57,23 @@ const FavoritesDrawer: React.FC = () => {
                     borderRadius="md"
                   />
                   <Box flex="1">
-                    <Text fontWeight="bold">{dog.name}</Text>
+                    <Text fontWeight="semibold">{dog.name}</Text>
                     <Text fontSize="sm" color="gray.600">
                       {dog.breed}, {dog.age} year{dog.age > 1 && "s"}
                     </Text>
                   </Box>
                   <IconButton
                     aria-label={"Drawer"}
-                    icon={<CloseIcon />} 
-                    size="sm"
+                    icon={
+                      favorites.has(dog.id) ? (
+                        <Icon as={AiFillStar as React.ElementType} />
+                      ) : (
+                        <Icon as={AiOutlineStar as React.ElementType} />
+                      )
+                    }
+                    size="lg"
                     variant="ghost"
-                    colorScheme="red"
+                    colorScheme="accent"
                     onClick={() => toggleFavorite(dog.id)}
                   ></IconButton>
                 </HStack>
