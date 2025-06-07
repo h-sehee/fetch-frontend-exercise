@@ -16,7 +16,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
   const [maxAge, setMaxAge] = useState<number>(0);
   const [ageRange, setAgeRange] = useState<[number, number]>([0, 0]);
   const [userZip, setUserZip] = useState<string>("");
-  const [radiusMeters, setRadiusMeters] = useState<number>(1000);
+  const [radiusMeters, setRadiusMeters] = useState<number | null>(null);
   const [zipCodesInRadius, setZipCodesInRadius] = useState<string[]>([]);
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
   const [stateZips, setStateZips] = useState<string[]>([]);
@@ -113,6 +113,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
           setZipCodesInRadius([]);
           return;
         }
+        if (!radiusMeters) return;
         const { latitude: userLat, longitude: userLon } = locations[0];
         const deltaLat = radiusMeters / 111000;
         const deltaLon =

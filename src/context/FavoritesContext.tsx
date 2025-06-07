@@ -22,10 +22,19 @@ interface FavoritesProviderProps {
   children: ReactNode;
 }
 
+const FAVORITES_KEY = "pawfetch:favorites";
+
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
   children,
 }) => {
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+      try {
+        const stored = sessionStorage.getItem(FAVORITES_KEY);
+        return stored ? new Set(JSON.parse(stored)) : new Set();
+      } catch {
+        return new Set();
+      }
+    });
   const [isFavOpen, setIsFavOpen] = useState<boolean>(false);
   const [favoriteDogsDetails, setFavoriteDogsDetails] = useState<Dog[]>([]);
 
@@ -40,6 +49,15 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 
   const openFavorites = () => setIsFavOpen(true);
   const closeFavorites = () => setIsFavOpen(false);
+
+  useEffect(() => {
+      try {
+        const arr = Array.from(favorites);
+        sessionStorage.setItem(FAVORITES_KEY, JSON.stringify(arr));
+      } catch (err) {
+        console.error("Failed to save favorites", err)
+      }
+    }, [favorites]);
 
   useEffect(() => {
     if (favorites.size === 0) {
