@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  fetchDogsByIds,
-  generateMatch,
-  Dog,
-} from "../api";
+import { fetchDogsByIds, generateMatch, Dog } from "../api";
 import {
   Box,
   Button,
@@ -35,20 +31,30 @@ const Search: React.FC = () => {
 
   const {
     breeds,
-    selectedBreeds, setSelectedBreeds,
+    selectedBreeds,
+    setSelectedBreeds,
     minAge,
     maxAge,
-    ageRange, setAgeRange,
-    userZip, setUserZip,
-    radiusMeters, setRadiusMeters,
+    ageRange,
+    setAgeRange,
+    userZip,
+    setUserZip,
+    radiusMeters,
+    setRadiusMeters,
     setZipCodesInRadius,
-    selectedStates, setSelectedStates,
+    selectedStates,
+    setSelectedStates,
     setStateZips,
     zipToLocation,
-    sortBy, setSortBy,
-    sortDir, setSortDir,
-    from, setFrom,
-    dogResults, total, loading,
+    sortBy,
+    setSortBy,
+    sortDir,
+    setSortDir,
+    from,
+    setFrom,
+    dogResults,
+    total,
+    loading,
   } = useDogSearch(toast, PAGE_SIZE);
 
   const [matchDog, setMatchDog] = useState<Dog | null>(null);

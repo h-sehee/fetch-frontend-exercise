@@ -38,24 +38,19 @@ export interface LocationSearchResponse {
   total: number;
 }
 
-export const searchLocations = async (
-  params: {
-    city?: string;
-    states?: string[];
-    geoBoundingBox?: GeoBoundingBox;
-    size?: number;
-    from?: number;
-  }
-): Promise<LocationSearchResponse> => {
-  const res = await fetch(
-    `${API_BASE_URL}/locations/search`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(params),
-    }
-  );
+export const searchLocations = async (params: {
+  city?: string;
+  states?: string[];
+  geoBoundingBox?: GeoBoundingBox;
+  size?: number;
+  from?: number;
+}): Promise<LocationSearchResponse> => {
+  const res = await fetch(`${API_BASE_URL}/locations/search`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
   if (!res.ok) {
     throw new Error("Failed to search locations");
   }

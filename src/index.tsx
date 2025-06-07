@@ -17,13 +17,13 @@ root.render(
   <React.StrictMode>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <FavoritesProvider>
-          <HashRouter>
+      <HashRouter>
+        <AuthProvider>
+          <FavoritesProvider>
             <App />
-          </HashRouter>
-        </FavoritesProvider>
-      </AuthProvider>
+          </FavoritesProvider>
+        </AuthProvider>
+      </HashRouter>
     </ChakraProvider>
   </React.StrictMode>
 );

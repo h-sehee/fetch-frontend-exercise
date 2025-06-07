@@ -32,8 +32,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
   const modalSize = useBreakpointValue({ base: "sm", md: "2xl", xl: "6xl" });
 
   const zip = matchDog?.zip_code ? matchDog.zip_code : "";
-  const { location: dogLocation, loading } =
-    useDogLocation(zip);
+  const { location: dogLocation, loading } = useDogLocation(zip);
 
   if (!matchDog) {
     return null;

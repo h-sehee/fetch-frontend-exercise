@@ -2,13 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { fetchLocationsByZip, Location } from "../api";
 
 export function useDogLocations(zipCodes: string[]) {
-  const [locationsMap, setLocationsMap] = useState<Record<string, Location>>({});
+  const [locationsMap, setLocationsMap] = useState<Record<string, Location>>(
+    {}
+  );
   const [loading, setLoading] = useState(false);
 
-  const zipKey = useMemo(
-    () => zipCodes.filter(Boolean).join(","),
-    [zipCodes]
-  );
+  const zipKey = useMemo(() => zipCodes.filter(Boolean).join(","), [zipCodes]);
 
   useEffect(() => {
     const codes = zipKey ? zipKey.split(",") : [];
