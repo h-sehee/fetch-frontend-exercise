@@ -8,7 +8,6 @@ import {
   DrawerCloseButton,
   VStack,
   HStack,
-  Image,
   Text,
   Box,
   IconButton,
