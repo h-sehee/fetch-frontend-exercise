@@ -1,10 +1,4 @@
-import {
-  HStack,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  Box,
-} from "@chakra-ui/react";
+import { HStack, Tag, TagLabel, TagCloseButton, Box } from "@chakra-ui/react";
 import { US_STATES } from "./FilterPopover";
 
 interface ActiveFiltersProps {

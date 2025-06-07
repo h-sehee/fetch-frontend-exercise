@@ -34,7 +34,7 @@ export const searchDogs = async (
   sort: string,
   ageMin?: number,
   ageMax?: number,
-  zipCodes: string[] = [],
+  zipCodes: string[] = []
 ): Promise<SearchResponse> => {
   const params = new URLSearchParams();
   if (breeds.length > 0) {

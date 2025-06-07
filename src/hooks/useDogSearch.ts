@@ -20,9 +20,13 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
   const [zipCodesInRadius, setZipCodesInRadius] = useState<string[]>([]);
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
   const [stateZips, setStateZips] = useState<string[]>([]);
-  const [zipToLocation, setZipToLocation] = useState<Record<string, Location>>({});
+  const [zipToLocation, setZipToLocation] = useState<Record<string, Location>>(
+    {}
+  );
 
-  const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">("breed");
+  const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">(
+    "breed"
+  );
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [from, setFrom] = useState<number>(0);
 
@@ -111,7 +115,8 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
         }
         const { latitude: userLat, longitude: userLon } = locations[0];
         const deltaLat = radiusMeters / 111000;
-        const deltaLon = radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
+        const deltaLon =
+          radiusMeters / (111000 * Math.cos((userLat * Math.PI) / 180));
         const { results } = await searchLocations({
           geoBoundingBox: {
             bottom_left: { lat: userLat - deltaLat, lon: userLon - deltaLon },
@@ -187,7 +192,9 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
   useEffect(() => {
     const fetchLocations = async () => {
       setLoading(true);
-      const zips = Array.from(new Set(dogResults.map((d) => d.zip_code))).filter(Boolean);
+      const zips = Array.from(
+        new Set(dogResults.map((d) => d.zip_code))
+      ).filter(Boolean);
       if (zips.length === 0) return;
       try {
         const locations = await fetchLocationsByZip(zips);
@@ -207,20 +214,35 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
   }, [dogResults]);
 
   return {
-    breeds, setBreeds,
-    selectedBreeds, setSelectedBreeds,
-    minAge, setMinAge,
-    maxAge, setMaxAge,
-    ageRange, setAgeRange,
-    userZip, setUserZip,
-    radiusMeters, setRadiusMeters,
-    zipCodesInRadius, setZipCodesInRadius,
-    selectedStates, setSelectedStates,
-    stateZips, setStateZips,
+    breeds,
+    setBreeds,
+    selectedBreeds,
+    setSelectedBreeds,
+    minAge,
+    setMinAge,
+    maxAge,
+    setMaxAge,
+    ageRange,
+    setAgeRange,
+    userZip,
+    setUserZip,
+    radiusMeters,
+    setRadiusMeters,
+    zipCodesInRadius,
+    setZipCodesInRadius,
+    selectedStates,
+    setSelectedStates,
+    stateZips,
+    setStateZips,
     zipToLocation,
-    sortBy, setSortBy,
-    sortDir, setSortDir,
-    from, setFrom,
-    dogResults, total, loading,
+    sortBy,
+    setSortBy,
+    sortDir,
+    setSortDir,
+    from,
+    setFrom,
+    dogResults,
+    total,
+    loading,
   };
 }
