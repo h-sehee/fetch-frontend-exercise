@@ -79,7 +79,7 @@ const FavoritesDrawer: React.FC = () => {
         <DrawerBody>
           {favoriteDogsDetails.length === 0 ? (
             <Box textAlign="center" py="10">
-              <Text color="gray.500">No favorites yet.</Text>
+              <Text color="gray.500">Nothing here yet. Find a pup you love!</Text>
             </Box>
           ) : (
             <VStack spacing="4" align="stretch" mt={3}>

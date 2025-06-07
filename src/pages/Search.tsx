@@ -51,7 +51,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { US_STATES } from "../components/FilterPopover";
 
 const Search: React.FC = () => {
-  const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20 }) ?? 10;
+  const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20, xl: 33 }) ?? 10;
 
   const toast = useToast();
 
@@ -212,6 +212,10 @@ const Search: React.FC = () => {
   ]);
 
   useEffect(() => {
+    setFrom(0);
+  }, [PAGE_SIZE]);
+
+  useEffect(() => {
     const fetchStateZips = async () => {
       if (!selectedStates) {
         setStateZips([]);
@@ -342,8 +346,8 @@ const Search: React.FC = () => {
 
   const bottomOffset = useBreakpointValue({ base: "2rem", md: "2rem" });
   const horizontalPos = useBreakpointValue<{ left?: string; right?: string }>({
-    base: { left: "50%" },
-    md: { right: "2rem" },
+    base: { left: "50%", right: "auto" },
+    md: { left: "auto", right: "2rem" },
   });
 
   const transformValue = useBreakpointValue({
@@ -868,7 +872,7 @@ const Search: React.FC = () => {
         py="4"
         fontSize="lg"
         borderRadius="full"
-        _hover={{ transform: "scale(1.05)" }}
+        _hover={{ transform: "scale(1.1)" }}
         transition="transform 0.2s"
         onClick={handleGenerateMatch}
       >

@@ -12,6 +12,7 @@ import {
   Heading,
   StackDivider,
   Icon,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { Dog, Location, fetchLocationsByZip } from "../api";
 import { MdLocationOn, MdCake, MdPets } from "react-icons/md";
@@ -29,6 +30,8 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
 }) => {
   const [dogLocation, setDogLocation] = useState<Record<string, Location>>({});
   const [loading, setLoading] = useState<boolean>(false);
+
+  const modalSize = useBreakpointValue({ base: "sm", md: "2xl", xl: "6xl" });
 
   useEffect(() => {
     if (!matchDog?.zip_code) {
@@ -63,14 +66,14 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
   const loc = dogLocation[matchDog.zip_code];
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      isCentered
-      size={{ base: "md", md: "2xl", xl: "6xl" }}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size={modalSize}>
       <ModalOverlay bg="blackAlpha.600" backdropFilter="blur(8px)" />
-      <ModalContent borderRadius="2xl" overflow="hidden" position="relative">
+      <ModalContent
+        borderRadius="2xl"
+        overflow="hidden"
+        position="relative"
+        maxW={{ base: "90vw", md: "2xl", xl: "6xl" }}
+      >
         <ModalCloseButton size="lg" top={4} right={4} color="gray.500" />
         <Flex direction={{ base: "column", md: "row" }} height="100%">
           <Box flex="1" height={{ base: "200px", md: "auto" }}>
@@ -80,6 +83,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
               objectFit="cover"
               width="100%"
               height="100%"
+              maxH={{base: "40vh", md:"90vh"}}
             />
           </Box>
 
