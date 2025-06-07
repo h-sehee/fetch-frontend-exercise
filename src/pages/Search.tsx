@@ -23,10 +23,10 @@ import Pagination from "../components/Pagination";
 import ActiveFilters from "../components/ActiveFilters";
 import SortMenu from "../components/SortMenu";
 import { useDogSearch } from "../hooks/useDogSearch";
+import { useUrlSync } from "../hooks/useUrlSync";
 
 const Search: React.FC = () => {
   const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20 }) ?? 10;
-
   const toast = useToast();
 
   const {
@@ -56,6 +56,27 @@ const Search: React.FC = () => {
     total,
     loading,
   } = useDogSearch(toast, PAGE_SIZE);
+
+  useUrlSync({
+    selectedBreeds,
+    setSelectedBreeds,
+    ageRange,
+    minAge,
+    maxAge,
+    setAgeRange,
+    userZip,
+    setUserZip,
+    radiusMeters,
+    setRadiusMeters,
+    selectedStates,
+    setSelectedStates,
+    sortBy,
+    setSortBy,
+    sortDir,
+    setSortDir,
+    from,
+    setFrom,
+  });
 
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
   const [isMatchOpen, setIsMatchOpen] = useState<boolean>(false);
@@ -178,7 +199,7 @@ const Search: React.FC = () => {
                 setUserZip(zip);
                 setFrom(0);
               }}
-              radiusMeters={radiusMeters}
+              radiusMeters={radiusMeters ?? 0}
               onChangeRadius={(meters) => {
                 setRadiusMeters(meters);
                 setFrom(0);
@@ -238,7 +259,7 @@ const Search: React.FC = () => {
             setStateZips={setStateZips}
             userZip={userZip}
             setUserZip={setUserZip}
-            radiusMeters={radiusMeters}
+            radiusMeters={radiusMeters ?? 0}
             setRadiusMeters={setRadiusMeters}
             setZipCodesInRadius={setZipCodesInRadius}
             setFrom={setFrom}
