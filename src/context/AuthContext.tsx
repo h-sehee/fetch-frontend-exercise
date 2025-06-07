@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       window.fetch = originalFetch;
     };
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
