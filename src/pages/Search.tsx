@@ -51,8 +51,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { US_STATES } from "../components/FilterPopover";
 
 const Search: React.FC = () => {
-  const PAGE_SIZE =
-    useBreakpointValue({ base: 10, md: 20  }) ?? 10;
+  const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20 }) ?? 10;
 
   const toast = useToast();
 
@@ -441,6 +440,9 @@ const Search: React.FC = () => {
                   setStateZips([]);
                   setFrom(0);
                 }}
+                _hover={{ transform: "scale(1.1)", bg: "transparent" }}
+                transition="transform 0.1s"
+                display={{ base: "none", md: "inline-flex" }}
               >
                 Clear All
               </Button>
@@ -594,6 +596,30 @@ const Search: React.FC = () => {
               )}
             </HStack>
           </Box>
+          {(selectedBreeds.length > 0 ||
+            !(ageRange[0] === minAge && ageRange[1] === maxAge) ||
+            selectedStates.length > 0 ||
+            userZip) && (
+            <Button
+              size="sm"
+              variant="ghost"
+              colorScheme="red"
+              onClick={() => {
+                setSelectedBreeds([]);
+                setAgeRange([minAge, maxAge]);
+                setUserZip("");
+                setRadiusMeters(0);
+                setZipCodesInRadius([]);
+                setSelectedStates([]);
+                setStateZips([]);
+                setFrom(0);
+              }}
+              _hover={{ bg: "transparent" }}
+              display={{ base: "inline-flex", md: "none" }}
+            >
+              Clear All
+            </Button>
+          )}
         </HStack>
 
         {loading ? (
