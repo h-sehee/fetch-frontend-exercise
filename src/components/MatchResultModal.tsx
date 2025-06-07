@@ -107,13 +107,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                 <Icon
                   as={MdPets as React.ElementType}
                   boxSize={6}
-                  color="gray.500"
+                  color="brand.400"
                   mr={3}
                 />
                 <Box>
                   <Text
                     fontSize="xs"
-                    color="gray.500"
+                    color="accent.500"
                     textTransform="uppercase"
                   >
                     Breed
@@ -125,13 +125,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                 <Icon
                   as={MdCake as React.ElementType}
                   boxSize={6}
-                  color="gray.500"
+                  color="brand.400"
                   mr={3}
                 />
                 <Box>
                   <Text
                     fontSize="xs"
-                    color="gray.500"
+                    color="accent.500"
                     textTransform="uppercase"
                   >
                     Age
@@ -146,13 +146,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                 <Icon
                   as={MdLocationOn as React.ElementType}
                   boxSize={6}
-                  color="gray.500"
+                  color="brand.400"
                   mr={3}
                 />
                 <Box>
                   <Text
                     fontSize="xs"
-                    color="gray.500"
+                    color="accent.500"
                     textTransform="uppercase"
                   >
                     Location
