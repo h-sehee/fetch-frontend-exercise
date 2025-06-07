@@ -34,16 +34,16 @@ const Search: React.FC = () => {
   const toast = useToast();
 
   const {
-    breeds, setBreeds,
+    breeds,
     selectedBreeds, setSelectedBreeds,
-    minAge, setMinAge,
-    maxAge, setMaxAge,
+    minAge,
+    maxAge,
     ageRange, setAgeRange,
     userZip, setUserZip,
     radiusMeters, setRadiusMeters,
-    zipCodesInRadius, setZipCodesInRadius,
+    setZipCodesInRadius,
     selectedStates, setSelectedStates,
-    stateZips, setStateZips,
+    setStateZips,
     zipToLocation,
     sortBy, setSortBy,
     sortDir, setSortDir,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Drawer,
   DrawerBody,
@@ -18,7 +18,6 @@ import {
 } from "@chakra-ui/react";
 import { useFavorites } from "../context/FavoritesContext";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { Location, fetchLocationsByZip } from "../api";
 import { useDogLocations } from "../hooks/useDogLocation";
 
 const FavoritesDrawer: React.FC = () => {
@@ -31,9 +30,10 @@ const FavoritesDrawer: React.FC = () => {
   } = useFavorites();
 
   const zips = Array.from(
-      new Set(favoriteDogsDetails.map(d => d.zip_code))
-    ).filter(Boolean);
-    const { locationsMap: dogLocations, loading: loading } = useDogLocations(zips);
+    new Set(favoriteDogsDetails.map((d) => d.zip_code))
+  ).filter(Boolean);
+  const { locationsMap: dogLocations, loading } =
+    useDogLocations(zips);
 
   return (
     <Drawer
@@ -55,7 +55,9 @@ const FavoritesDrawer: React.FC = () => {
         <DrawerBody>
           {favoriteDogsDetails.length === 0 ? (
             <Box textAlign="center" py="10">
-              <Text color="gray.500">Nothing here yet. Find a pup you love!</Text>
+              <Text color="gray.500">
+                Nothing here yet. Find a pup you love!
+              </Text>
             </Box>
           ) : (
             <VStack spacing="4" align="stretch" mt={3}>
