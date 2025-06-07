@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Modal,
   ModalOverlay,
@@ -14,8 +14,9 @@ import {
   Icon,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { Dog, Location, fetchLocationsByZip } from "../api";
+import { Dog } from "../api";
 import { MdLocationOn, MdCake, MdPets } from "react-icons/md";
+import { useDogLocation } from "../hooks/useDogLocation";
 
 interface MatchResultModalProps {
   isOpen: boolean;
@@ -28,42 +29,15 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
   onClose,
   matchDog,
 }) => {
-  const [dogLocation, setDogLocation] = useState<Record<string, Location>>({});
-  const [loading, setLoading] = useState<boolean>(false);
-
   const modalSize = useBreakpointValue({ base: "sm", md: "2xl", xl: "6xl" });
 
-  useEffect(() => {
-    if (!matchDog?.zip_code) {
-      setDogLocation({});
-      return;
-    }
-
-    const zip = matchDog.zip_code;
-    const fetchLocation = async () => {
-      setLoading(true);
-      try {
-        const [loc] = await fetchLocationsByZip([zip]);
-        if (loc) {
-          setDogLocation({ [zip]: loc });
-        } else {
-          setDogLocation({});
-        }
-      } catch (err) {
-        console.error("Failed to fetch location data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLocation();
-  }, [matchDog]);
+  const zip = matchDog?.zip_code ? matchDog.zip_code : "";
+  const { location: dogLocation, loading: loading } =
+    useDogLocation(zip);
 
   if (!matchDog) {
     return null;
   }
-
-  const loc = dogLocation[matchDog.zip_code];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size={modalSize}>
@@ -83,7 +57,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
               objectFit="cover"
               width="100%"
               height="100%"
-              maxH={{base: "40vh", md:"90vh"}}
+              maxH={{ base: "40vh", md: "90vh" }}
             />
           </Box>
 
@@ -165,8 +139,8 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                     <Text fontSize="sm">Loading address…</Text>
                   ) : (
                     <Text fontSize="sm">
-                      {loc
-                        ? `${loc.city}, ${loc.county}, ${loc.state} ${loc.zip_code}`
+                      {dogLocation
+                        ? `${dogLocation.city}, ${dogLocation.county}, ${dogLocation.state} ${dogLocation.zip_code}`
                         : matchDog.zip_code}
                     </Text>
                   )}
