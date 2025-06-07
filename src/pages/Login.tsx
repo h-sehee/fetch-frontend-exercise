@@ -12,19 +12,21 @@ import {
   Icon,
   Image,
   Text,
-  Link
+  Link,
+  useToast,
 } from "@chakra-ui/react";
 import { login } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { FaPaw } from "react-icons/fa";
 import loginPageImage from "../assets/side-view-dog-woman-hand-shaking-park.jpg";
 
-const Login = () => {
+const Login: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const toast = useToast();
   const { setIsLoggedIn } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -34,6 +36,15 @@ const Login = () => {
       await login(name.trim(), email.trim());
       setIsLoggedIn(true);
       navigate("/search");
+    } catch (err) {
+      toast({
+        title: "Login failed",
+        description:
+          err instanceof Error ? err.message : "An unknown error occurred.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -56,7 +67,11 @@ const Login = () => {
               color="accent.500"
               mb="8"
             >
-              <Icon as={FaPaw as React.ElementType} mr="3" />
+              <Icon
+                aria-label="Paw icon"
+                as={FaPaw as React.ElementType}
+                mr="3"
+              />
               PawFetch
             </Heading>
 
@@ -84,13 +99,18 @@ const Login = () => {
                 </FormControl>
                 <Button
                   type="submit"
+                  isDisabled={!name.trim() || !email.trim()}
                   bg="accent.500"
                   color="darkBrand.500"
                   width="full"
                   mt="4"
                   isLoading={loading}
                   loadingText="Logging in..."
-                  _hover={{ bg: "accent.600" }}
+                  _hover={
+                    !(!name.trim() || !email.trim())
+                      ? { bg: "accent.600" }
+                      : { bg: "accent.500" }
+                  }
                 >
                   Login
                 </Button>
