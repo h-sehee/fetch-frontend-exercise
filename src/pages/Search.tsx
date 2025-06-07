@@ -209,6 +209,7 @@ const Search: React.FC = () => {
     minAge,
     maxAge,
     toast,
+    PAGE_SIZE,
   ]);
 
   useEffect(() => {
@@ -272,6 +273,7 @@ const Search: React.FC = () => {
 
   useEffect(() => {
     const fetchLocations = async () => {
+      setLoading(true);
       const zips = Array.from(
         new Set(dogResults.map((d) => d.zip_code))
       ).filter(Boolean);
@@ -280,11 +282,14 @@ const Search: React.FC = () => {
         const locations = await fetchLocationsByZip(zips);
         const map: Record<string, Location> = {};
         for (const loc of locations) {
+          if (!loc) continue;
           map[loc.zip_code] = loc;
         }
         setZipToLocation(map);
       } catch (err) {
         console.error("Failed to fetch location data", err);
+      } finally {
+        setLoading(false);
       }
     };
 

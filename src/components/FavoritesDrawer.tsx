@@ -16,7 +16,6 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useFavorites } from "../context/FavoritesContext";
-import { CloseIcon } from "@chakra-ui/icons";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const FavoritesDrawer: React.FC = () => {
