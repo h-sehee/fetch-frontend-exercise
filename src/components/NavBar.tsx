@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { logout } from "../api";
+import { FaPaw } from "react-icons/fa";
 
 const NavBar: React.FC = () => {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
@@ -37,20 +38,29 @@ const NavBar: React.FC = () => {
       top="0"
       zIndex="10"
     >
-      <Text fontWeight="bold" fontSize="lg">
-        🐶 Fetch Dog Search
-      </Text>
+      <Flex align="flex-start" flexDirection="row" alignItems="center">
+        <Icon as={FaPaw as React.ElementType} mr="3" color="accent.500" />
+        <Text fontWeight="bold" fontSize="lg">
+          PawFetch
+        </Text>
+      </Flex>
 
       <HStack spacing="4">
         <Button
           variant="ghost"
-          leftIcon={<Icon as={FiStar as React.ElementType} boxSize={5} color="accent.500"/>}
+          leftIcon={
+            <Icon
+              as={FiStar as React.ElementType}
+              boxSize={5}
+              color="accent.500"
+            />
+          }
           onClick={openFavorites}
           position="relative"
           color="white"
           _hover={{ bg: "rgba(255,255,255,0.1)" }}
         >
-          Favorites
+          Barkmarks
           {favorites.size > 0 && (
             <Box
               as="span"

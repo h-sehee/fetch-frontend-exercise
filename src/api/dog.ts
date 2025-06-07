@@ -31,11 +31,23 @@ export const searchDogs = async (
   breeds: string[],
   size: number,
   from: number,
-  sort: string
+  sort: string,
+  ageMin?: number,
+  ageMax?: number,
+  zipCodes: string[] = [],
 ): Promise<SearchResponse> => {
   const params = new URLSearchParams();
   if (breeds.length > 0) {
     breeds.forEach((b) => params.append("breeds", b));
+  }
+  if (zipCodes.length > 0) {
+    zipCodes.forEach((z) => params.append("zipCodes", z));
+  }
+  if (typeof ageMin === "number") {
+    params.set("ageMin", ageMin.toString());
+  }
+  if (typeof ageMax === "number") {
+    params.set("ageMax", ageMax.toString());
   }
   params.append("size", size.toString());
   params.append("from", from.toString());

@@ -7,12 +7,10 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Button,
   Image,
   Text,
   VStack,
   Box,
-  IconButton,
 } from "@chakra-ui/react";
 import { Dog } from "../api";
 
