@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/fetch-frontend-exercise/static/css/main.f855e6bc.css",
-    "main.js": "/fetch-frontend-exercise/static/js/main.a181b49d.js",
+    "main.js": "/fetch-frontend-exercise/static/js/main.df903dda.js",
     "static/media/side-view-dog-woman-hand-shaking-park.jpg": "/fetch-frontend-exercise/static/media/side-view-dog-woman-hand-shaking-park.5f3bc8472c24d7e0d9ca.jpg",
     "index.html": "/fetch-frontend-exercise/index.html",
     "main.f855e6bc.css.map": "/fetch-frontend-exercise/static/css/main.f855e6bc.css.map",
-    "main.a181b49d.js.map": "/fetch-frontend-exercise/static/js/main.a181b49d.js.map"
+    "main.df903dda.js.map": "/fetch-frontend-exercise/static/js/main.df903dda.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.a181b49d.js"
+    "static/js/main.df903dda.js"
   ]
 }
