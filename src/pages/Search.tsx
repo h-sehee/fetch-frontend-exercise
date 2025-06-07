@@ -17,7 +17,6 @@ import {
   Grid,
   GridItem,
   IconButton,
-  Image,
   Spinner,
   useToast,
   Text,
@@ -40,6 +39,7 @@ import {
   MenuOptionGroup,
   MenuItemOption,
   MenuDivider,
+  Avatar,
 } from "@chakra-ui/react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { FaCaretDown, FaCaretUp, FaPaw } from "react-icons/fa";
@@ -644,12 +644,12 @@ const Search: React.FC = () => {
                   display="flex"
                   flexDirection="column"
                 >
-                  <Image
+                  <Avatar
                     src={dog.img}
-                    alt={dog.name}
                     boxSize="200px"
                     objectFit="cover"
                     w="100%"
+                    borderRadius="none"
                   />
                   <Box p="4" flex="1">
                     <VStack align="start" spacing="2">

@@ -15,6 +15,7 @@ import {
   Flex,
   Icon,
   Tag,
+  Avatar,
 } from "@chakra-ui/react";
 import { useFavorites } from "../context/FavoritesContext";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -82,13 +83,12 @@ const FavoritesDrawer: React.FC = () => {
               <Text color="gray.500">No favorites yet.</Text>
             </Box>
           ) : (
-            <VStack spacing="4" align="stretch" mt={2}>
+            <VStack spacing="4" align="stretch" mt={3}>
               {favoriteDogsDetails.map((dog) => (
                 <Flex key={dog.id} align="center" gap={4} borderRadius="md">
-                  <Image
+                  <Avatar
                     src={dog.img}
-                    alt={dog.name}
-                    boxSize="60px"
+                    boxSize="70px"
                     objectFit="cover"
                     borderRadius="md"
                   />
