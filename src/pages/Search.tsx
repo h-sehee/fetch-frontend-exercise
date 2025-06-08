@@ -27,6 +27,7 @@ import { useUrlSync } from "../hooks/useUrlSync";
 
 const Search: React.FC = () => {
   const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20 }) ?? 10;
+  
   const toast = useToast();
 
   const {
@@ -297,7 +298,10 @@ const Search: React.FC = () => {
         ) : (
           <>
             <Grid
-              templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+              templateColumns={"repeat(auto-fill, minmax(200px, 1fr))"}
+              w="100%"
+              maxW="2216px"
+              mx="auto"
               gap="6"
             >
               {dogResults.map((dog) => (
