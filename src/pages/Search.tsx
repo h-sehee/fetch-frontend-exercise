@@ -77,6 +77,8 @@ const Search: React.FC = () => {
     setSortDir,
     from,
     setFrom,
+    setStateZips,
+    setZipCodesInRadius
   });
 
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
