@@ -84,6 +84,7 @@ export function useUrlSync({
 
     const f = searchParams.get("from");
     if (f) setFrom(Number(f));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -116,6 +117,7 @@ export function useUrlSync({
 
   useEffect(() => {
     setFrom(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, sortDir]);
 
   useEffect(() => {
@@ -131,6 +133,7 @@ export function useUrlSync({
     setSortBy("breed");
     setSortDir("asc");
     setSearchParams({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }
 }, [searchParams]);
 }
