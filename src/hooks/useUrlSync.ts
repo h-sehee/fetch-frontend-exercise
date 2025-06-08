@@ -52,7 +52,7 @@ export function useUrlSync({
   from,
   setFrom,
   setStateZips,
-  setZipCodesInRadius
+  setZipCodesInRadius,
 }: UrlSyncOptions) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -121,19 +121,19 @@ export function useUrlSync({
   }, [sortBy, sortDir]);
 
   useEffect(() => {
-  if (searchParams.get("reset") === "1") {
-    setSelectedBreeds([]);
-    setAgeRange([minAge, maxAge]);
-    setUserZip("");
-    setRadiusMeters(0);
-    setZipCodesInRadius([]);
-    setSelectedStates([]);
-    setStateZips([]);
-    setFrom(0);
-    setSortBy("breed");
-    setSortDir("asc");
-    setSearchParams({});
+    if (searchParams.get("reset") === "1") {
+      setSelectedBreeds([]);
+      setAgeRange([minAge, maxAge]);
+      setUserZip("");
+      setRadiusMeters(0);
+      setZipCodesInRadius([]);
+      setSelectedStates([]);
+      setStateZips([]);
+      setFrom(0);
+      setSortBy("breed");
+      setSortDir("asc");
+      setSearchParams({});
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }
-}, [searchParams]);
+  }, [searchParams]);
 }
