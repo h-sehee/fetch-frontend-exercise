@@ -2,6 +2,8 @@ import { useToast } from "@chakra-ui/react";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE_URL = "https://frontend-take-home-service.fetch.com";
+
 interface AuthContextType {
   isLoggedIn: boolean | null;
   setIsLoggedIn: (value: boolean) => void;
@@ -18,7 +20,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const toast = useToast();
 
   useEffect(() => {
-    fetch("/dogs/breeds", {
+    fetch(`${API_BASE_URL}/dogs/breeds`, {
       method: "GET",
       credentials: "include",
     })
