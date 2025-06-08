@@ -27,6 +27,9 @@ interface UrlSyncOptions {
 
   from: number;
   setFrom: Dispatch<SetStateAction<number>>;
+
+  setStateZips: Dispatch<React.SetStateAction<string[]>>;
+  setZipCodesInRadius: Dispatch<React.SetStateAction<string[]>>;
 }
 
 export function useUrlSync({
@@ -48,6 +51,8 @@ export function useUrlSync({
   setSortDir,
   from,
   setFrom,
+  setStateZips,
+  setZipCodesInRadius
 }: UrlSyncOptions) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -79,7 +84,6 @@ export function useUrlSync({
 
     const f = searchParams.get("from");
     if (f) setFrom(Number(f));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -112,6 +116,21 @@ export function useUrlSync({
 
   useEffect(() => {
     setFrom(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, sortDir]);
+
+  useEffect(() => {
+  if (searchParams.get("reset") === "1") {
+    setSelectedBreeds([]);
+    setAgeRange([minAge, maxAge]);
+    setUserZip("");
+    setRadiusMeters(0);
+    setZipCodesInRadius([]);
+    setSelectedStates([]);
+    setStateZips([]);
+    setFrom(0);
+    setSortBy("breed");
+    setSortDir("asc");
+    setSearchParams({});
+  }
+}, [searchParams]);
 }

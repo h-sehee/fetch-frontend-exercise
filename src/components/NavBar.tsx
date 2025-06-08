@@ -13,6 +13,10 @@ const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleLogoClick = () => {
+    navigate("/search?reset=1", { replace: true });
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -38,9 +42,15 @@ const NavBar: React.FC = () => {
       top="0"
       zIndex="10"
     >
-      <Flex align="flex-start" flexDirection="row" alignItems="center">
-        <Icon as={FaPaw as React.ElementType} mr="3" color="accent.500" />
-        <Text fontWeight="bold" fontSize="lg">
+      <Flex
+        align="flex-start"
+        flexDirection="row"
+        alignItems="center"
+        cursor="pointer"
+        onClick={handleLogoClick}
+      >
+        <Icon as={FaPaw as React.ElementType} mr="3" color="accent.500" boxSize={5}/>
+        <Text fontWeight="bold" fontSize="xl">
           PawFetch
         </Text>
       </Flex>
