@@ -27,3 +27,16 @@ export const logout = async () => {
     throw new Error("Logout failed");
   }
 };
+
+export const checkLogin = async (): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/dogs/breeds`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    return response.ok;
+  } catch (err) {
+    return false;
+  }
+};
