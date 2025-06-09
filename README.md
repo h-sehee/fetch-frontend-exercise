@@ -44,6 +44,7 @@ This project demonstrates clean code architecture, modular component design, and
 │   ├── api/                  # API modules (auth, dog, location)
 │   ├── assets/               # Static assets (e.g., images)
 │   ├── components/           # Reusable UI components (DogCard, FilterPopover, Pagination, etc.)
+│   ├── constants/            # 
 │   ├── context/              # React Context providers (AuthContext, FavoritesContext)
 │   ├── hooks/                # Custom React hooks (useDogLocation, useDogSearch, useUrlSync)
 │   ├── pages/                # Route-level components (Login, Search)

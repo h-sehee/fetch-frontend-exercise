@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
+/**
+ * Options for synchronizing filter/search state with the URL.
+ */
 interface UrlSyncOptions {
   selectedBreeds: string[];
   setSelectedBreeds: Dispatch<SetStateAction<string[]>>;
@@ -32,6 +35,12 @@ interface UrlSyncOptions {
   setZipCodesInRadius: Dispatch<React.SetStateAction<string[]>>;
 }
 
+/**
+ * Custom hook to synchronize filter/search state with the URL query parameters.
+ * - Reads initial state from URL on mount.
+ * - Updates URL when state changes.
+ * - Supports reset via ?reset=1 param.
+ */
 export function useUrlSync({
   selectedBreeds,
   setSelectedBreeds,
@@ -56,6 +65,7 @@ export function useUrlSync({
 }: UrlSyncOptions) {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // On mount: initialize state from URL query parameters
   useEffect(() => {
     const b = searchParams.get("breeds");
     if (b) setSelectedBreeds(b.split(","));
@@ -87,6 +97,7 @@ export function useUrlSync({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // When state changes: update URL query parameters
   useEffect(() => {
     const params: Record<string, string> = {};
 
@@ -115,11 +126,13 @@ export function useUrlSync({
     setSearchParams,
   ]);
 
+  // Reset pagination when sort changes
   useEffect(() => {
     setFrom(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, sortDir]);
 
+  // Handle reset via ?reset=1 param in URL
   useEffect(() => {
     if (searchParams.get("reset") === "1") {
       setSelectedBreeds([]);

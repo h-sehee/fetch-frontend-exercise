@@ -22,6 +22,7 @@ import SortMenu from "../components/SortMenu";
 import { useDogSearch } from "../hooks/useDogSearch";
 import { useUrlSync } from "../hooks/useUrlSync";
 
+// Lazy load filter and modal components for performance
 const FilterPopover = React.lazy(() => import("../components/FilterPopover"));
 const FavoritesDrawer = React.lazy(
   () => import("../components/FavoritesDrawer")
@@ -30,11 +31,18 @@ const MatchResultModal = React.lazy(
   () => import("../components/MatchResultModal")
 );
 
+/**
+ * Search page component.
+ * Handles the main dog search UI, including filters, sorting, pagination, and match feature.
+ */
 const Search: React.FC = () => {
+  // Responsive page size based on viewport
   const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20 }) ?? 10;
 
+  // Toast for feedback messages
   const toast = useToast();
 
+  // Custom hook for managing all dog search/filter/sort state and logic
   const {
     breeds,
     selectedBreeds,
@@ -63,6 +71,7 @@ const Search: React.FC = () => {
     loading,
   } = useDogSearch(toast, PAGE_SIZE);
 
+  // Sync filter/search state with URL query parameters
   useUrlSync({
     selectedBreeds,
     setSelectedBreeds,
@@ -86,11 +95,14 @@ const Search: React.FC = () => {
     setZipCodesInRadius,
   });
 
+  // State for match modal (random favorite dog)
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
   const [isMatchOpen, setIsMatchOpen] = useState<boolean>(false);
 
+  // Favorites context for managing favorite dogs
   const { favorites, toggleFavorite } = useFavorites();
 
+  // Pagination navigation handlers
   const goNext = () => {
     if (from + PAGE_SIZE < total) {
       setFrom((prev) => prev + PAGE_SIZE);
@@ -102,6 +114,10 @@ const Search: React.FC = () => {
     }
   };
 
+  /**
+   * Handles the "Match" button click.
+   * Picks a random favorite dog and opens the match modal.
+   */
   const handleGenerateMatch = async () => {
     if (favorites.size === 0) {
       toast({
@@ -131,11 +147,13 @@ const Search: React.FC = () => {
     }
   };
 
+  // Closes the match modal
   const handleMatchClose = () => {
     setIsMatchOpen(false);
     setMatchDog(null);
   };
 
+  // Responsive positioning for the floating Match button
   const bottomOffset = useBreakpointValue({ base: "2rem", md: "2rem" });
   const horizontalPos = useBreakpointValue<{ left?: string; right?: string }>({
     base: { left: "50%", right: "auto" },
@@ -147,10 +165,14 @@ const Search: React.FC = () => {
     md: "none",
   });
 
+  // Pagination calculations
   const currentPage = Math.floor(from / PAGE_SIZE) + 1;
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const [inputPage, setInputPage] = useState(currentPage);
 
+  /**
+   * Generates an array of page numbers and ellipsis for pagination controls.
+   */
   const getPageNumbers = (): (number | "...")[] => {
     const pages: (number | "...")[] = [];
     if (totalPages <= 7) {
@@ -186,8 +208,10 @@ const Search: React.FC = () => {
   return (
     <Box p="4">
       <VStack align="stretch" spacing="6">
+        {/* Top filter and sort controls */}
         <Flex justify="space-between" align="center" wrap="wrap" gap={2} mb={3}>
           <HStack spacing="4">
+            {/* Filter popover for breeds, age, location, etc. */}
             <FilterPopover
               allBreeds={breeds}
               selectedBreeds={selectedBreeds}
@@ -218,6 +242,7 @@ const Search: React.FC = () => {
                 setFrom(0);
               }}
             />
+            {/* "Clear All" button for desktop */}
             {(selectedBreeds.length > 0 ||
               !(ageRange[0] === minAge && ageRange[1] === maxAge) ||
               selectedStates.length > 0 ||
@@ -245,6 +270,7 @@ const Search: React.FC = () => {
             )}
           </HStack>
 
+          {/* Sort menu */}
           <HStack spacing="4" flexShrink={0} whiteSpace={"nowrap"}>
             <SortMenu
               sortBy={sortBy}
@@ -254,6 +280,7 @@ const Search: React.FC = () => {
             />
           </HStack>
         </Flex>
+        {/* Active filters and "Clear All" for mobile */}
         <HStack wrap="wrap" spacing="2" mb="2">
           <ActiveFilters
             selectedBreeds={selectedBreeds}
@@ -298,6 +325,7 @@ const Search: React.FC = () => {
           )}
         </HStack>
 
+        {/* Dog results grid or loading spinner */}
         {loading ? (
           <Center py="20">
             <Spinner size="lg" color="accent.500" />
@@ -311,6 +339,7 @@ const Search: React.FC = () => {
               mx="auto"
               gap="6"
             >
+              {/* Render each dog card */}
               {dogResults.map((dog) => (
                 <DogCard
                   dog={dog}
@@ -338,6 +367,7 @@ const Search: React.FC = () => {
                 />
               ))}
             </Grid>
+            {/* Pagination controls */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -356,9 +386,11 @@ const Search: React.FC = () => {
           </>
         )}
       </VStack>
+      {/* Favorites drawer (barkmarks) */}
       <Suspense fallback={null}>
         <FavoritesDrawer />
       </Suspense>
+      {/* Match result modal */}
       <Suspense fallback={null}>
         <MatchResultModal
           isOpen={isMatchOpen}
@@ -367,6 +399,7 @@ const Search: React.FC = () => {
         />
       </Suspense>
 
+      {/* Floating "Match" button */}
       <Button
         position="fixed"
         bottom={bottomOffset}

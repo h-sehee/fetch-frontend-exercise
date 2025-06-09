@@ -7,16 +7,26 @@ import { useFavorites } from "../context/FavoritesContext";
 import { logout } from "../api";
 import { FaPaw } from "react-icons/fa";
 
+/**
+ * Navigation bar component displayed at the top of the app.
+ * Shows the app logo, Barkmarks (favorites) button, and logout button.
+ */
 const NavBar: React.FC = () => {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const { favorites, openFavorites } = useFavorites();
   const navigate = useNavigate();
   const location = useLocation();
 
+  /**
+   * Handles logo click: navigates to the search page and resets filters.
+   */
   const handleLogoClick = () => {
     navigate("/search?reset=1", { replace: true });
   };
 
+  /**
+   * Handles user logout: calls API, updates auth state, and navigates to login.
+   */
   const handleLogout = async () => {
     try {
       await logout();
@@ -42,6 +52,7 @@ const NavBar: React.FC = () => {
       top="0"
       zIndex="10"
     >
+      {/* Logo and app name */}
       <Flex
         align="flex-start"
         flexDirection="row"
@@ -55,7 +66,9 @@ const NavBar: React.FC = () => {
         </Text>
       </Flex>
 
+      {/* Barkmarks and logout buttons */}
       <HStack spacing="4">
+        {/* Favorites (Barkmarks) button with badge */}
         <Button
           variant="ghost"
           leftIcon={
@@ -89,6 +102,7 @@ const NavBar: React.FC = () => {
           )}
         </Button>
 
+        {/* Logout button (only when logged in and not on home page) */}
         {isLoggedIn && location.pathname !== "/" && (
           <Button size="sm" colorScheme="brand" onClick={handleLogout}>
             Logout

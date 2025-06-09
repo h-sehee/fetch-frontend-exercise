@@ -1,6 +1,9 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
+/**
+ * Footer component displayed at the bottom of the app.
+ */
 const Footer: React.FC = () => {
   return (
     <Box
@@ -14,7 +17,7 @@ const Footer: React.FC = () => {
       textAlign="center"
     >
       <Text fontSize="sm" color="darkBrand.500">
-        © 2025 PawFetch. All rights reserved.
+        PawFetch – For technical evaluation only.
       </Text>
     </Box>
   );

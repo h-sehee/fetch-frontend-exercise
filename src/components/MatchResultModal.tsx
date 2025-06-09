@@ -18,22 +18,35 @@ import { Dog } from "../api";
 import { MdLocationOn, MdCake, MdPets } from "react-icons/md";
 import { useDogLocation } from "../hooks/useDogLocation";
 
+/**
+ * Props for the MatchResultModal component.
+ * Displays the matched dog's details in a modal dialog.
+ */
 interface MatchResultModalProps {
   isOpen: boolean;
   onClose: () => void;
   matchDog: Dog | null;
 }
 
+/**
+ * Modal component that shows the result of a dog match.
+ * Displays dog image, name, breed, age, and location details.
+ */
 const MatchResultModal: React.FC<MatchResultModalProps> = ({
   isOpen,
   onClose,
   matchDog,
 }) => {
+  // Responsive modal size based on viewport
   const modalSize = useBreakpointValue({ base: "sm", md: "2xl", xl: "6xl" });
 
+  // Get zip code from matched dog
   const zip = matchDog?.zip_code ? matchDog.zip_code : "";
+
+  // Fetch location details for the matched dog
   const { location: dogLocation, loading } = useDogLocation(zip);
 
+  // If no dog is matched, do not render the modal
   if (!matchDog) {
     return null;
   }
@@ -49,6 +62,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
       >
         <ModalCloseButton size="lg" top={4} right={4} color="gray.500" />
         <Flex direction={{ base: "column", md: "row" }} height="100%">
+          {/* Dog image section */}
           <Box flex="1" height={{ base: "200px", md: "auto" }}>
             <Image
               src={matchDog.img}
@@ -60,6 +74,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
             />
           </Box>
 
+          {/* Dog details section */}
           <Flex direction="column" justify="center" p={{ base: 6, md: 10 }}>
             <Heading
               as="h2"
@@ -80,6 +95,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
               divider={<StackDivider borderColor="gray.200" />}
               mt={6}
             >
+              {/* Breed info */}
               <Flex align="center">
                 <Icon
                   as={MdPets as React.ElementType}
@@ -98,6 +114,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                   <Text fontSize="sm">{matchDog.breed}</Text>
                 </Box>
               </Flex>
+              {/* Age info */}
               <Flex align="center">
                 <Icon
                   as={MdCake as React.ElementType}
@@ -118,7 +135,7 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                   </Text>
                 </Box>
               </Flex>
-
+              {/* Location info */}
               <Flex align="center">
                 <Icon
                   as={MdLocationOn as React.ElementType}

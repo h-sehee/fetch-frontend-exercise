@@ -1,5 +1,8 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 
+/**
+ * Custom color palette for the application.
+ */
 const colors = {
   brand: {
     50: "#fdf7eb",
@@ -23,11 +26,21 @@ const colors = {
   },
 };
 
+/**
+ * Theme configuration for Chakra UI.
+ * - Sets initial color mode to light.
+ * - Disables system color mode.
+ */
 const config: ThemeConfig = {
   initialColorMode: "light",
   useSystemColorMode: false,
 };
 
+/**
+ * Custom Chakra UI theme for PawFetch.
+ * - Sets color palette, fonts, and global styles.
+ * - Customizes Button, Input, and Select components.
+ */
 const theme = extendTheme({
   config,
   colors,
@@ -46,13 +59,14 @@ const theme = extendTheme({
   components: {
     Button: {
       variants: {
-        solid: (props: any) => ({
-          bg: props.colorScheme === "brand" ? "accent.500" : undefined,
-          color: props.colorScheme === "brand" ? "white" : undefined,
-          _hover: {
-            bg: props.colorScheme === "brand" ? "accent.600" : undefined,
-          },
-        }),
+        solid: (props: any) =>
+          props.colorScheme === "brand"
+            ? {
+                bg: "accent.500",
+                color: "white",
+                _hover: { bg: "accent.600" },
+              }
+            : {},
       },
     },
     Input: {

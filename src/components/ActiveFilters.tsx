@@ -1,6 +1,10 @@
 import { HStack, Tag, TagLabel, TagCloseButton, Box } from "@chakra-ui/react";
-import { US_STATES } from "./FilterPopover";
+import { US_STATES } from "../constants/usStates";
 
+/**
+ * Props for the ActiveFilters component.
+ * Displays currently active filters and allows users to remove them.
+ */
 interface ActiveFiltersProps {
   selectedBreeds: string[];
   setSelectedBreeds: (b: string[] | ((prev: string[]) => string[])) => void;
@@ -19,6 +23,10 @@ interface ActiveFiltersProps {
   setFrom: (n: number) => void;
 }
 
+/**
+ * Renders tags for each active filter (breed, age, state, zip/radius).
+ * Each tag can be removed individually to update the filter state.
+ */
 const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   selectedBreeds,
   setSelectedBreeds,
@@ -38,6 +46,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
 }) => (
   <Box>
     <HStack spacing="2" flexWrap="wrap">
+      {/* Render a tag for each selected breed */}
       {selectedBreeds.map((breed) => (
         <Tag
           size="md"
@@ -57,6 +66,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
           />
         </Tag>
       ))}
+      {/* Render a tag for the selected age range if it differs from the default */}
       {!(ageRange[0] === minAge && ageRange[1] === maxAge) && (
         <Tag size="md" borderRadius="full" variant="solid" colorScheme="brand">
           <TagLabel>
@@ -70,6 +80,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
           />
         </Tag>
       )}
+      {/* Render a tag for each selected state */}
       {selectedStates.map((abbr) => {
         const stateObj = US_STATES.find((s) => s.code === abbr);
         return (
@@ -93,6 +104,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
           </Tag>
         );
       })}
+      {/* Render a tag for the zip code and radius filter */}
       {userZip && (
         <Tag size="md" borderRadius="full" variant="solid" colorScheme="brand">
           <TagLabel>

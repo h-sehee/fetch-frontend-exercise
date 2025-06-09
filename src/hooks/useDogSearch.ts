@@ -9,7 +9,14 @@ import {
   Location,
 } from "../api";
 
+/**
+ * Custom hook to manage dog search state and logic.
+ * Handles filters, sorting, pagination, and fetching of dog and location data.
+ * @param toast - Toast notification handler (from Chakra UI)
+ * @param PAGE_SIZE - Number of results per page
+ */
 export function useDogSearch(toast: any, PAGE_SIZE: number) {
+  // Breed and filter state
   const [breeds, setBreeds] = useState<string[]>([]);
   const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
   const [minAge, setMinAge] = useState<number>(0);
@@ -24,16 +31,19 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     {}
   );
 
+   // Sorting and pagination state
   const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">(
     "breed"
   );
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [from, setFrom] = useState<number>(0);
 
+  // Search results state
   const [dogResults, setDogResults] = useState<Dog[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Fetch all breeds on mount
   useEffect(() => {
     const fetchAllBreeds = async () => {
       try {
@@ -50,6 +60,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
       }
     };
 
+    // Fetch min and max age for dogs
     const fetchMinMaxAge = async () => {
       try {
         const resMin = await searchDogs([], 1, 0, "age:asc");
@@ -76,12 +87,14 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     fetchMinMaxAge();
   }, [toast]);
 
+  // Update age range when min/max age changes
   useEffect(() => {
     if (minAge <= maxAge) {
       setAgeRange([minAge, maxAge]);
     }
   }, [minAge, maxAge]);
 
+  // Fetch zip codes for selected states
   useEffect(() => {
     const fetchStateZips = async () => {
       if (!selectedStates) {
@@ -101,6 +114,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     fetchStateZips();
   }, [selectedStates]);
 
+  // Fetch zip codes within a radius of the user's zip code
   useEffect(() => {
     const fetchNearbyZips = async () => {
       if (!userZip) {
@@ -133,6 +147,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     fetchNearbyZips();
   }, [userZip, radiusMeters]);
 
+  // Main dog search effect: runs when filters, sorting, or pagination changes
   useEffect(() => {
     const doSearch = async () => {
       setLoading(true);
@@ -190,6 +205,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     PAGE_SIZE,
   ]);
 
+  // Fetch location details for all dogs in the current results
   useEffect(() => {
     const fetchLocations = async () => {
       setLoading(true);
@@ -214,6 +230,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     fetchLocations();
   }, [dogResults]);
 
+  // Return all state and setters for use in components
   return {
     breeds,
     setBreeds,

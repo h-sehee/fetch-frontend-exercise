@@ -20,6 +20,11 @@ import { useAuth } from "../context/AuthContext";
 import { FaPaw } from "react-icons/fa";
 import loginPageImage from "../assets/side-view-dog-woman-hand-shaking-park.jpg";
 
+/**
+ * Login page component.
+ * Renders a login form and handles user authentication.
+ * On successful login, navigates to the search page.
+ */
 const Login: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,14 +34,22 @@ const Login: React.FC = () => {
   const toast = useToast();
   const { setIsLoggedIn } = useAuth();
 
+  /**
+   * Handles the login form submission.
+   * Calls the login API and updates authentication state.
+   * Shows error toast if login fails.
+   */
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Attempt login with trimmed name and email
       await login(name.trim(), email.trim());
       setIsLoggedIn(true);
+      // Redirect to search page after successful login
       navigate("/search");
     } catch (err) {
+      // Show error message if login fails
       toast({
         title: "Login failed",
         description:
@@ -52,6 +65,7 @@ const Login: React.FC = () => {
 
   return (
     <Flex h="100vh" overflow="hidden">
+      {/* Login form section */}
       <Flex flex={{ base: "1", md: "0.5" }} align="center" justify="center">
         <Box
           maxW={{ base: "90vw", md: "30vw" }}
@@ -60,6 +74,7 @@ const Login: React.FC = () => {
           p="8"
         >
           <VStack spacing="6" align="stretch">
+            {/* App logo and title */}
             <Heading
               as="h2"
               size="2xl"
@@ -75,8 +90,10 @@ const Login: React.FC = () => {
               PawFetch
             </Heading>
 
+            {/* Login form */}
             <Box as="form" onSubmit={handleLogin}>
               <VStack spacing="4" align="stretch">
+                {/* Name input */}
                 <FormControl id="name" isRequired>
                   <FormLabel color="darkBrand.500">Name</FormLabel>
                   <Input
@@ -87,6 +104,7 @@ const Login: React.FC = () => {
                     _focus={{ borderColor: "accent.500" }}
                   />
                 </FormControl>
+                {/* Email input */}
                 <FormControl id="email" isRequired>
                   <FormLabel color="darkBrand.500">Email</FormLabel>
                   <Input
@@ -97,6 +115,7 @@ const Login: React.FC = () => {
                     _focus={{ borderColor: "accent.500" }}
                   />
                 </FormControl>
+                {/* Submit button */}
                 <Button
                   type="submit"
                   isDisabled={!name.trim() || !email.trim()}
@@ -120,6 +139,7 @@ const Login: React.FC = () => {
         </Box>
       </Flex>
 
+      {/* Side image section (hidden on mobile) */}
       <Box
         flex={{ base: "0", md: "1" }}
         display={{ base: "none", md: "block" }}
@@ -132,6 +152,7 @@ const Login: React.FC = () => {
           h="100%"
           objectPosition="60% center"
         />
+        {/* Image attribution */}
         <Text
           position="absolute"
           bottom="2"
