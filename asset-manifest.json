@@ -1,14 +1,22 @@
 {
   "files": {
     "main.css": "/fetch-frontend-exercise/static/css/main.f855e6bc.css",
-    "main.js": "/fetch-frontend-exercise/static/js/main.00b64522.js",
+    "main.js": "/fetch-frontend-exercise/static/js/main.3590bd36.js",
+    "static/js/777.dfc3fbbf.chunk.js": "/fetch-frontend-exercise/static/js/777.dfc3fbbf.chunk.js",
+    "static/js/126.b8d9a6d1.chunk.js": "/fetch-frontend-exercise/static/js/126.b8d9a6d1.chunk.js",
+    "static/js/671.68152132.chunk.js": "/fetch-frontend-exercise/static/js/671.68152132.chunk.js",
+    "static/js/974.2fa82a3c.chunk.js": "/fetch-frontend-exercise/static/js/974.2fa82a3c.chunk.js",
     "static/media/side-view-dog-woman-hand-shaking-park.jpg": "/fetch-frontend-exercise/static/media/side-view-dog-woman-hand-shaking-park.5f3bc8472c24d7e0d9ca.jpg",
     "index.html": "/fetch-frontend-exercise/index.html",
     "main.f855e6bc.css.map": "/fetch-frontend-exercise/static/css/main.f855e6bc.css.map",
-    "main.00b64522.js.map": "/fetch-frontend-exercise/static/js/main.00b64522.js.map"
+    "main.3590bd36.js.map": "/fetch-frontend-exercise/static/js/main.3590bd36.js.map",
+    "777.dfc3fbbf.chunk.js.map": "/fetch-frontend-exercise/static/js/777.dfc3fbbf.chunk.js.map",
+    "126.b8d9a6d1.chunk.js.map": "/fetch-frontend-exercise/static/js/126.b8d9a6d1.chunk.js.map",
+    "671.68152132.chunk.js.map": "/fetch-frontend-exercise/static/js/671.68152132.chunk.js.map",
+    "974.2fa82a3c.chunk.js.map": "/fetch-frontend-exercise/static/js/974.2fa82a3c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.00b64522.js"
+    "static/js/main.3590bd36.js"
   ]
 }
