@@ -134,4 +134,4 @@ const DogCard: React.FC<DogCardProps> = ({
   );
 };
 
-export default DogCard;
+export default React.memo(DogCard);

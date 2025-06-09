@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { fetchDogsByIds, generateMatch, Dog } from "../api";
 import {
   Box,
@@ -15,9 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { FaPaw } from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
-import FavoritesDrawer from "../components/FavoritesDrawer";
-import MatchResultModal from "../components/MatchResultModal";
-import FilterPopover from "../components/FilterPopover";
 import DogCard from "../components/DogCard";
 import Pagination from "../components/Pagination";
 import ActiveFilters from "../components/ActiveFilters";
@@ -25,9 +22,17 @@ import SortMenu from "../components/SortMenu";
 import { useDogSearch } from "../hooks/useDogSearch";
 import { useUrlSync } from "../hooks/useUrlSync";
 
+const FilterPopover = React.lazy(() => import("../components/FilterPopover"));
+const FavoritesDrawer = React.lazy(
+  () => import("../components/FavoritesDrawer")
+);
+const MatchResultModal = React.lazy(
+  () => import("../components/MatchResultModal")
+);
+
 const Search: React.FC = () => {
   const PAGE_SIZE = useBreakpointValue({ base: 10, md: 20 }) ?? 10;
-  
+
   const toast = useToast();
 
   const {
@@ -78,7 +83,7 @@ const Search: React.FC = () => {
     from,
     setFrom,
     setStateZips,
-    setZipCodesInRadius
+    setZipCodesInRadius,
   });
 
   const [matchDog, setMatchDog] = useState<Dog | null>(null);
@@ -351,12 +356,17 @@ const Search: React.FC = () => {
           </>
         )}
       </VStack>
-      <FavoritesDrawer />
-      <MatchResultModal
-        isOpen={isMatchOpen}
-        onClose={handleMatchClose}
-        matchDog={matchDog}
-      />
+      <Suspense fallback={null}>
+        <FavoritesDrawer />
+      </Suspense>
+      <Suspense fallback={null}>
+        <MatchResultModal
+          isOpen={isMatchOpen}
+          onClose={handleMatchClose}
+          matchDog={matchDog}
+        />
+      </Suspense>
+
       <Button
         position="fixed"
         bottom={bottomOffset}

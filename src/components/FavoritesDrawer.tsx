@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Drawer,
   DrawerBody,
@@ -29,11 +29,13 @@ const FavoritesDrawer: React.FC = () => {
     toggleFavorite,
   } = useFavorites();
 
-  const zips = Array.from(
-    new Set(favoriteDogsDetails.map((d) => d.zip_code))
-  ).filter(Boolean);
+  const zips = useMemo(() => {
+    return Array.from(
+      new Set(favoriteDogsDetails.map((d) => d.zip_code))
+    ).filter(Boolean);
+  }, [favoriteDogsDetails]);
+  
   const { locationsMap: dogLocations, loading } = useDogLocations(zips);
-
   return (
     <Drawer
       placement="right"
