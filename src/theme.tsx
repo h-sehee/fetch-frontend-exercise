@@ -5,24 +5,14 @@ import { extendTheme, ThemeConfig } from "@chakra-ui/react";
  */
 const colors = {
   brand: {
-    50: "#fdf7eb",
-    100: "#fbe9c8",
-    200: "#f9dca6",
-    300: "#f7ce83",
-    400: "#f5c160",
-    500: "#f3b53d",
-    600: "#d89d34",
-    700: "#b4852b",
-    800: "#8d6d22",
-    900: "#65551a",
-  },
-  darkBrand: {
-    500: "#300d38",
-  },
-  accent: {
+    300: "#f5c160",
+    400: "#f3b53d",
     500: "#fba919",
     600: "#e59417",
     700: "#cc7f15",
+  },
+  darkBrand: {
+    500: "#300d38",
   },
 };
 
@@ -62,21 +52,21 @@ const theme = extendTheme({
         solid: (props: any) =>
           props.colorScheme === "brand"
             ? {
-                bg: "accent.500",
+                bg: "brand.500",
                 color: "white",
-                _hover: { bg: "accent.600" },
+                _hover: { bg: "brand.600" },
               }
             : {},
       },
     },
     Input: {
       defaultProps: {
-        focusBorderColor: "accent.500",
+        focusBorderColor: "brand.500",
       },
     },
     Select: {
       defaultProps: {
-        focusBorderColor: "accent.500",
+        focusBorderColor: "brand.500",
       },
     },
   },

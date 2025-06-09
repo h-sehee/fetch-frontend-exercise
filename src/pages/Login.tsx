@@ -79,7 +79,7 @@ const Login: React.FC = () => {
               as="h2"
               size="2xl"
               textAlign="center"
-              color="accent.500"
+              color="brand.500"
               mb="8"
             >
               <Icon
@@ -101,7 +101,6 @@ const Login: React.FC = () => {
                     placeholder="Your Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    _focus={{ borderColor: "accent.500" }}
                   />
                 </FormControl>
                 {/* Email input */}
@@ -112,14 +111,13 @@ const Login: React.FC = () => {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    _focus={{ borderColor: "accent.500" }}
                   />
                 </FormControl>
                 {/* Submit button */}
                 <Button
                   type="submit"
                   isDisabled={!name.trim() || !email.trim()}
-                  bg="accent.500"
+                  bg="brand.500"
                   color="darkBrand.500"
                   width="full"
                   mt="4"
@@ -127,8 +125,8 @@ const Login: React.FC = () => {
                   loadingText="Logging in..."
                   _hover={
                     !(!name.trim() || !email.trim())
-                      ? { bg: "accent.600" }
-                      : { bg: "accent.500" }
+                      ? { bg: "brand.600" }
+                      : { bg: "brand.500" }
                   }
                 >
                   Login

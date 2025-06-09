@@ -125,7 +125,7 @@ const FavoritesDrawer: React.FC = () => {
                     }
                     size="lg"
                     variant="ghost"
-                    colorScheme="accent"
+                    colorScheme="brand"
                     onClick={() => toggleFavorite(dog.id)}
                     ml="auto"
                   ></IconButton>

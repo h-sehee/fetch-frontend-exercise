@@ -133,7 +133,7 @@ const DogCard: React.FC<DogCardProps> = ({
             <Icon as={AiOutlineStar as React.ElementType} />
           )
         }
-        color="accent.500"
+        color="brand.500"
         fontSize="20px"
         fontWeight="bold"
         position="absolute"

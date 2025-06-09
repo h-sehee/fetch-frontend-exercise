@@ -249,10 +249,10 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   onChangeEnd={(val) => handleAgeChangeEnd(val)}
                 >
                   <RangeSliderTrack>
-                    <RangeSliderFilledTrack bg="brand.500" />
+                    <RangeSliderFilledTrack bg="brand.400" />
                   </RangeSliderTrack>
-                  <RangeSliderThumb index={0} boxSize={4} bg="accent.500" />
-                  <RangeSliderThumb index={1} boxSize={4} bg="accent.500" />
+                  <RangeSliderThumb index={0} boxSize={4} bg="brand.500" />
+                  <RangeSliderThumb index={1} boxSize={4} bg="brand.500" />
                 </RangeSlider>
               </AccordionPanel>
             </AccordionItem>

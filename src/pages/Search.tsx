@@ -328,7 +328,7 @@ const Search: React.FC = () => {
         {/* Dog results grid or loading spinner */}
         {loading ? (
           <Center py="20">
-            <Spinner size="lg" color="accent.500" />
+            <Spinner size="lg" color="brand.500" />
           </Center>
         ) : (
           <>
