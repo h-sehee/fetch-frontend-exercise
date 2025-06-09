@@ -60,7 +60,12 @@ const NavBar: React.FC = () => {
         cursor="pointer"
         onClick={handleLogoClick}
       >
-        <Icon as={FaPaw as React.ElementType} mr="3" color="accent.500" boxSize={5}/>
+        <Icon
+          as={FaPaw as React.ElementType}
+          mr="3"
+          color="brand.500"
+          boxSize={5}
+        />
         <Text fontWeight="bold" fontSize="xl">
           PawFetch
         </Text>
@@ -75,7 +80,7 @@ const NavBar: React.FC = () => {
             <Icon
               as={FiStar as React.ElementType}
               boxSize={5}
-              color="accent.500"
+              color="brand.500"
             />
           }
           onClick={openFavorites}
@@ -90,7 +95,7 @@ const NavBar: React.FC = () => {
               position="absolute"
               top="-1"
               right="-1"
-              bg="accent.500"
+              bg="brand.500"
               color="white"
               borderRadius="full"
               fontSize="xs"

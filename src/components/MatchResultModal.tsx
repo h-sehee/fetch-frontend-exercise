@@ -79,7 +79,6 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
             <Heading
               as="h2"
               mb={4}
-              color="accent.500"
               fontSize={{ base: "2xl", md: "3xl" }}
               bgGradient="linear(to-r, purple.500, pink.300)"
               bgClip="text"
@@ -100,13 +99,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                 <Icon
                   as={MdPets as React.ElementType}
                   boxSize={6}
-                  color="brand.400"
+                  color="brand.300"
                   mr={3}
                 />
                 <Box>
                   <Text
                     fontSize="xs"
-                    color="accent.500"
+                    color="brand.500"
                     textTransform="uppercase"
                   >
                     Breed
@@ -119,13 +118,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                 <Icon
                   as={MdCake as React.ElementType}
                   boxSize={6}
-                  color="brand.400"
+                  color="brand.300"
                   mr={3}
                 />
                 <Box>
                   <Text
                     fontSize="xs"
-                    color="accent.500"
+                    color="brand.500"
                     textTransform="uppercase"
                   >
                     Age
@@ -140,13 +139,13 @@ const MatchResultModal: React.FC<MatchResultModalProps> = ({
                 <Icon
                   as={MdLocationOn as React.ElementType}
                   boxSize={6}
-                  color="brand.400"
+                  color="brand.300"
                   mr={3}
                 />
                 <Box>
                   <Text
                     fontSize="xs"
-                    color="accent.500"
+                    color="brand.500"
                     textTransform="uppercase"
                   >
                     Location

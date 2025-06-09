@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     // Show spinner while checking authentication
     return (
       <Flex justify="center" align="center" minH="60vh">
-        <Spinner size="xl" color="accent.500" />
+        <Spinner size="xl" color="brand.500" />
       </Flex>
     );
   }

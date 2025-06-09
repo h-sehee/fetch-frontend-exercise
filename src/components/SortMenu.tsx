@@ -34,7 +34,7 @@ const SortMenu: React.FC<SortMenuProps> = ({
     <MenuButton
       as={Button}
       variant="outline"
-      colorScheme="accent"
+      colorScheme="brand"
       rightIcon={
         <Icon
           as={

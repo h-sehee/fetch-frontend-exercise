@@ -31,7 +31,7 @@ export function useDogSearch(toast: any, PAGE_SIZE: number) {
     {}
   );
 
-   // Sorting and pagination state
+  // Sorting and pagination state
   const [sortBy, setSortBy] = useState<"breed" | "name" | "age" | "location">(
     "breed"
   );
