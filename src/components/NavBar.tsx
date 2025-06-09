@@ -60,7 +60,12 @@ const NavBar: React.FC = () => {
         cursor="pointer"
         onClick={handleLogoClick}
       >
-        <Icon as={FaPaw as React.ElementType} mr="3" color="brand.500" boxSize={5}/>
+        <Icon
+          as={FaPaw as React.ElementType}
+          mr="3"
+          color="brand.500"
+          boxSize={5}
+        />
         <Text fontWeight="bold" fontSize="xl">
           PawFetch
         </Text>

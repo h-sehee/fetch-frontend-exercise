@@ -40,7 +40,7 @@ const FavoritesDrawer: React.FC = () => {
       new Set(favoriteDogsDetails.map((d) => d.zip_code))
     ).filter(Boolean);
   }, [favoriteDogsDetails]);
-  
+
   // Fetch location info for favorite dogs
   const { locationsMap: dogLocations, loading } = useDogLocations(zips);
   return (

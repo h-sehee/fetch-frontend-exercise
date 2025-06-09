@@ -27,7 +27,7 @@ const config: ThemeConfig = {
 };
 
 /**
- * Custom Chakra UI theme for PawFetch.
+ * Custom Chakra UI theme for PawFetch.F
  * - Sets color palette, fonts, and global styles.
  * - Customizes Button, Input, and Select components.
  */

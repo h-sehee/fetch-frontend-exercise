@@ -40,17 +40,17 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 }) => {
   // State for storing favorite dog IDs
   const [favorites, setFavorites] = useState<Set<string>>(() => {
-      try {
-        const stored = sessionStorage.getItem(FAVORITES_KEY);
-        return stored ? new Set(JSON.parse(stored)) : new Set();
-      } catch {
-        return new Set();
-      }
-    });
+    try {
+      const stored = sessionStorage.getItem(FAVORITES_KEY);
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
 
   // State for drawer open/close
   const [isFavOpen, setIsFavOpen] = useState<boolean>(false);
-  
+
   // State for storing details of favorite dogs
   const [favoriteDogsDetails, setFavoriteDogsDetails] = useState<Dog[]>([]);
 
@@ -78,13 +78,13 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 
   // Persist favorites to sessionStorage whenever they change
   useEffect(() => {
-      try {
-        const arr = Array.from(favorites);
-        sessionStorage.setItem(FAVORITES_KEY, JSON.stringify(arr));
-      } catch (err) {
-        console.error("Failed to save favorites", err)
-      }
-    }, [favorites]);
+    try {
+      const arr = Array.from(favorites);
+      sessionStorage.setItem(FAVORITES_KEY, JSON.stringify(arr));
+    } catch (err) {
+      console.error("Failed to save favorites", err);
+    }
+  }, [favorites]);
 
   // Fetch details for all favorite dogs whenever favorites change
   useEffect(() => {
