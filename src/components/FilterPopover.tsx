@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Button,
   Popover,
@@ -73,12 +73,14 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   const [tempZip, setTempZip] = useState<string>(userZip);
 
   const [stateSearch, setStateSearch] = useState("");
-  const filteredStates = US_STATES.filter(
-    ({ code, name }) =>
-      !selectedStates.includes(code) &&
-      (code.toLowerCase().includes(stateSearch.toLowerCase()) ||
-        name.toLowerCase().includes(stateSearch.toLowerCase()))
-  );
+  const filteredStates = useMemo(() => {
+    return US_STATES.filter(
+      ({ code, name }) =>
+        !selectedStates.includes(code) &&
+        (code.toLowerCase().includes(stateSearch.toLowerCase()) ||
+          name.toLowerCase().includes(stateSearch.toLowerCase()))
+    );
+  }, [stateSearch, selectedStates]);
 
   useEffect(() => {
     setTempAgeRange(ageRange);
@@ -96,9 +98,11 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     setTempZip(userZip);
   }, [userZip, radiusMeters]);
 
-  const filteredBreeds = allBreeds.filter((b) =>
-    b.toLowerCase().includes(breedSearch.toLowerCase())
-  );
+  const filteredBreeds = useMemo(() => {
+    return allBreeds.filter((b) =>
+      b.toLowerCase().includes(breedSearch.toLowerCase())
+    );
+  }, [breedSearch, allBreeds]);
 
   const handleBreedsChange = (vals: string[]) => {
     onChangeBreeds(vals);
