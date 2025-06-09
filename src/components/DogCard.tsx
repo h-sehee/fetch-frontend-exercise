@@ -13,6 +13,10 @@ import {
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { Dog, Location } from "../api";
 
+/**
+ * Props for the DogCard component.
+ * Displays information about a single dog and allows filtering and favoriting actions.
+ */
 interface DogCardProps {
   dog: Dog;
   location?: Location;
@@ -23,6 +27,9 @@ interface DogCardProps {
   onFavoriteToggle: (id: string) => void;
 }
 
+/**
+ * Renders a card displaying dog details, location, and interactive filter/favorite buttons.
+ */
 const DogCard: React.FC<DogCardProps> = ({
   dog,
   location,
@@ -32,6 +39,7 @@ const DogCard: React.FC<DogCardProps> = ({
   onFilterByState,
   onFavoriteToggle,
 }) => {
+  // Determine tag color based on dog's age
   const ageScheme = dog.age <= 2 ? "green" : dog.age <= 8 ? "yellow" : "red";
 
   return (
@@ -46,6 +54,7 @@ const DogCard: React.FC<DogCardProps> = ({
       display="flex"
       flexDirection="column"
     >
+      {/* Dog image */}
       <Avatar
         src={dog.img}
         loading="lazy"
@@ -54,12 +63,13 @@ const DogCard: React.FC<DogCardProps> = ({
         w="100%"
         borderRadius="none"
       />
+      {/* Dog info */}
       <Box p="4" flex="1">
         <VStack align="start" spacing="2">
           <Text fontWeight="bold" fontSize="lg">
             {dog.name}
           </Text>
-
+          {/* Breed tag with filter action */}
           <HStack spacing={1} wrap="wrap">
             <Tag
               colorScheme="blue"
@@ -70,7 +80,7 @@ const DogCard: React.FC<DogCardProps> = ({
               {dog.breed}
             </Tag>
           </HStack>
-
+          {/* Age tag with filter action */}
           <HStack spacing={1}>
             <Tag
               size="sm"
@@ -83,6 +93,7 @@ const DogCard: React.FC<DogCardProps> = ({
           </HStack>
         </VStack>
       </Box>
+      {/* Location and state filter */}
       <Box
         mt="auto"
         bg="darkBrand.500"
@@ -112,6 +123,7 @@ const DogCard: React.FC<DogCardProps> = ({
           transition="transform 0.1s"
         />
       </Box>
+      {/* Favorite button */}
       <IconButton
         aria-label="Favorite"
         icon={

@@ -1,5 +1,9 @@
+// API base URL for the Fetch take-home API
 const API_BASE_URL = "https://frontend-take-home-service.fetch.com";
 
+/**
+ * Dog entity interface.
+ */
 export interface Dog {
   id: string;
   img: string;
@@ -9,6 +13,9 @@ export interface Dog {
   breed: string;
 }
 
+/**
+ * Response format for dog search API.
+ */
 export interface SearchResponse {
   resultIds: string[];
   total: number;
@@ -16,6 +23,11 @@ export interface SearchResponse {
   prev?: string;
 }
 
+/**
+ * Fetches all available dog breeds.
+ * @returns Array of breed names
+ * @throws Error if the request fails
+ */
 export const fetchBreeds = async (): Promise<string[]> => {
   const res = await fetch(`${API_BASE_URL}/dogs/breeds`, {
     method: "GET",
@@ -27,6 +39,18 @@ export const fetchBreeds = async (): Promise<string[]> => {
   return res.json();
 };
 
+/**
+ * Searches for dogs based on filters and pagination.
+ * @param breeds - Array of breed names to filter
+ * @param size - Number of results per page
+ * @param from - Offset for pagination
+ * @param sort - Sort order
+ * @param ageMin - Minimum age filter (optional)
+ * @param ageMax - Maximum age filter (optional)
+ * @param zipCodes - Array of zip codes to filter (optional)
+ * @returns SearchResponse object
+ * @throws Error if the request fails
+ */
 export const searchDogs = async (
   breeds: string[],
   size: number,
@@ -64,6 +88,12 @@ export const searchDogs = async (
   return res.json();
 };
 
+/**
+ * Fetches dog details for the given array of dog IDs.
+ * @param ids - Array of dog IDs
+ * @returns Array of Dog objects
+ * @throws Error if the request fails
+ */
 export const fetchDogsByIds = async (ids: string[]): Promise<Dog[]> => {
   const res = await fetch(`${API_BASE_URL}/dogs`, {
     method: "POST",
@@ -79,6 +109,12 @@ export const fetchDogsByIds = async (ids: string[]): Promise<Dog[]> => {
   return res.json();
 };
 
+/**
+ * Generates a match from the given favorite dog IDs.
+ * @param ids - Array of favorite dog IDs
+ * @returns The matched dog's ID as a string
+ * @throws Error if the request fails
+ */
 export const generateMatch = async (ids: string[]): Promise<string> => {
   const res = await fetch(`${API_BASE_URL}/dogs/match`, {
     method: "POST",

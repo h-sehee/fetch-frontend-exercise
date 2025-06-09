@@ -7,6 +7,9 @@ import React, {
 } from "react";
 import { Dog, fetchDogsByIds } from "../api";
 
+/**
+ * FavoritesContextType defines the shape of the favorites context.
+ */
 interface FavoritesContextType {
   favorites: Set<string>;
   toggleFavorite: (dogId: string) => void;
@@ -16,6 +19,9 @@ interface FavoritesContextType {
   favoriteDogsDetails: Dog[];
 }
 
+/**
+ * Context for managing favorite dogs ("Barkmarks").
+ */
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 interface FavoritesProviderProps {
@@ -24,9 +30,15 @@ interface FavoritesProviderProps {
 
 const FAVORITES_KEY = "pawfetch:favorites";
 
+/**
+ * FavoritesProvider manages the favorites state and provides actions to update it.
+ * - Persists favorites in sessionStorage.
+ * - Fetches dog details for all favorite dog IDs.
+ */
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
   children,
 }) => {
+  // State for storing favorite dog IDs
   const [favorites, setFavorites] = useState<Set<string>>(() => {
       try {
         const stored = sessionStorage.getItem(FAVORITES_KEY);
@@ -35,9 +47,16 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
         return new Set();
       }
     });
+
+  // State for drawer open/close
   const [isFavOpen, setIsFavOpen] = useState<boolean>(false);
+  
+  // State for storing details of favorite dogs
   const [favoriteDogsDetails, setFavoriteDogsDetails] = useState<Dog[]>([]);
 
+  /**
+   * Toggles a dog as favorite/unfavorite.
+   */
   const toggleFavorite = (dogId: string) => {
     setFavorites((prev) => {
       const newSet = new Set(prev);
@@ -47,9 +66,17 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
     });
   };
 
+  /**
+   * Opens the favorites drawer.
+   */
   const openFavorites = () => setIsFavOpen(true);
+
+  /**
+   * Closes the favorites drawer.
+   */
   const closeFavorites = () => setIsFavOpen(false);
 
+  // Persist favorites to sessionStorage whenever they change
   useEffect(() => {
       try {
         const arr = Array.from(favorites);
@@ -59,6 +86,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
       }
     }, [favorites]);
 
+  // Fetch details for all favorite dogs whenever favorites change
   useEffect(() => {
     if (favorites.size === 0) {
       setFavoriteDogsDetails([]);
@@ -90,6 +118,10 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
   );
 };
 
+/**
+ * Custom hook to access the favorites context.
+ * Throws if used outside of FavoritesProvider.
+ */
 export const useFavorites = (): FavoritesContextType => {
   const ctx = useContext(FavoritesContext);
   if (!ctx) {

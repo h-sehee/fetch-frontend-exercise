@@ -32,7 +32,12 @@ import {
 } from "@chakra-ui/react";
 import { IoFilter } from "react-icons/io5";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { US_STATES } from "../constants/usStates";
 
+/**
+ * Props for the FilterPopover component.
+ * Controls all filter options for the dog search (breed, age, location, distance).
+ */
 interface FilterPopoverProps {
   allBreeds: string[];
   selectedBreeds: string[];
@@ -51,6 +56,10 @@ interface FilterPopoverProps {
   onChangeStates: (states: string[]) => void;
 }
 
+/**
+ * FilterPopover component provides UI for selecting and managing search filters.
+ * Includes breed, age, state, zip code, and distance filters.
+ */
 const FilterPopover: React.FC<FilterPopoverProps> = ({
   allBreeds,
   selectedBreeds,
@@ -66,13 +75,19 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   selectedStates,
   onChangeStates,
 }) => {
+  // Local state for breed search input
   const [breedSearch, setBreedSearch] = useState<string>("");
 
+  // Local state for temporary age range slider
   const [tempAgeRange, setTempAgeRange] = useState<[number, number]>(ageRange);
 
+  // Local state for temporary zip code input
   const [tempZip, setTempZip] = useState<string>(userZip);
 
+  // Local state for state search input
   const [stateSearch, setStateSearch] = useState("");
+
+  // Filter US states based on search input and already selected states
   const filteredStates = useMemo(() => {
     return US_STATES.filter(
       ({ code, name }) =>
@@ -82,10 +97,12 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     );
   }, [stateSearch, selectedStates]);
 
+  // Sync tempAgeRange with external ageRange prop
   useEffect(() => {
     setTempAgeRange(ageRange);
   }, [ageRange]);
 
+  // Clamp tempAgeRange if min/max age changes
   useEffect(() => {
     setTempAgeRange(([prevMin, prevMax]) => {
       const newMin = prevMin < minAge ? minAge : prevMin;
@@ -94,25 +111,30 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     });
   }, [minAge, maxAge]);
 
+  // Sync tempZip with external userZip/radiusMeters
   useEffect(() => {
     setTempZip(userZip);
   }, [userZip, radiusMeters]);
 
+  // Filter breeds based on search input
   const filteredBreeds = useMemo(() => {
     return allBreeds.filter((b) =>
       b.toLowerCase().includes(breedSearch.toLowerCase())
     );
   }, [breedSearch, allBreeds]);
 
+  // Handler for breed selection changes
   const handleBreedsChange = (vals: string[]) => {
     onChangeBreeds(vals);
   };
 
+  // Handler for age range slider change end
   const handleAgeChangeEnd = (valArr: number[]) => {
     const newRange: [number, number] = [valArr[0], valArr[1]];
     onChangeAgeRange(newRange);
   };
 
+  // Handler for zip code input blur
   const handleZipBlur = () => {
     onChangeUserZip(tempZip.trim());
   };
@@ -155,6 +177,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
 
         <PopoverBody maxH="480px" overflowY="auto" pb="2">
           <Accordion allowToggle>
+            {/* Breed filter section */}
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -171,7 +194,6 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   mb="2"
                   value={breedSearch}
                   onChange={(e) => setBreedSearch(e.target.value)}
-                  focusBorderColor="accent.500"
                 />
                 <Button
                   size="sm"
@@ -204,6 +226,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
               </AccordionPanel>
             </AccordionItem>
 
+            {/* Age filter section */}
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -234,6 +257,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
               </AccordionPanel>
             </AccordionItem>
 
+            {/* State filter section */}
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -250,7 +274,6 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   mb="2"
                   value={stateSearch}
                   onChange={(e) => setStateSearch(e.target.value)}
-                  focusBorderColor="accent.500"
                 />
 
                 {stateSearch.trim() !== "" && (
@@ -301,6 +324,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                 </Wrap>
               </AccordionPanel>
             </AccordionItem>
+            {/* Distance filter section */}
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -321,7 +345,6 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   value={tempZip}
                   onChange={(e) => setTempZip(e.target.value)}
                   onBlur={handleZipBlur}
-                  focusBorderColor="accent.500"
                 />
 
                 <Text fontSize="sm" mb="2">
@@ -356,58 +379,5 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     </Popover>
   );
 };
-
-export const US_STATES = [
-  { code: "AL", name: "Alabama" },
-  { code: "AK", name: "Alaska" },
-  { code: "AZ", name: "Arizona" },
-  { code: "AR", name: "Arkansas" },
-  { code: "CA", name: "California" },
-  { code: "CO", name: "Colorado" },
-  { code: "CT", name: "Connecticut" },
-  { code: "DE", name: "Delaware" },
-  { code: "FL", name: "Florida" },
-  { code: "GA", name: "Georgia" },
-  { code: "HI", name: "Hawaii" },
-  { code: "ID", name: "Idaho" },
-  { code: "IL", name: "Illinois" },
-  { code: "IN", name: "Indiana" },
-  { code: "IA", name: "Iowa" },
-  { code: "KS", name: "Kansas" },
-  { code: "KY", name: "Kentucky" },
-  { code: "LA", name: "Louisiana" },
-  { code: "ME", name: "Maine" },
-  { code: "MD", name: "Maryland" },
-  { code: "MA", name: "Massachusetts" },
-  { code: "MI", name: "Michigan" },
-  { code: "MN", name: "Minnesota" },
-  { code: "MS", name: "Mississippi" },
-  { code: "MO", name: "Missouri" },
-  { code: "MT", name: "Montana" },
-  { code: "NE", name: "Nebraska" },
-  { code: "NV", name: "Nevada" },
-  { code: "NH", name: "New Hampshire" },
-  { code: "NJ", name: "New Jersey" },
-  { code: "NM", name: "New Mexico" },
-  { code: "NY", name: "New York" },
-  { code: "NC", name: "North Carolina" },
-  { code: "ND", name: "North Dakota" },
-  { code: "OH", name: "Ohio" },
-  { code: "OK", name: "Oklahoma" },
-  { code: "OR", name: "Oregon" },
-  { code: "PA", name: "Pennsylvania" },
-  { code: "RI", name: "Rhode Island" },
-  { code: "SC", name: "South Carolina" },
-  { code: "SD", name: "South Dakota" },
-  { code: "TN", name: "Tennessee" },
-  { code: "TX", name: "Texas" },
-  { code: "UT", name: "Utah" },
-  { code: "VT", name: "Vermont" },
-  { code: "VA", name: "Virginia" },
-  { code: "WA", name: "Washington" },
-  { code: "WV", name: "West Virginia" },
-  { code: "WI", name: "Wisconsin" },
-  { code: "WY", name: "Wyoming" },
-];
 
 export default FilterPopover;

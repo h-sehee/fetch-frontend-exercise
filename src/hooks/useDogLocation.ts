@@ -1,12 +1,18 @@
 import { useEffect, useState, useMemo } from "react";
 import { fetchLocationsByZip, Location } from "../api";
 
+/**
+ * Custom hook to fetch and map location details for an array of zip codes.
+ * Returns a map of zip code to Location and a loading state.
+ * @param zipCodes - Array of zip code strings
+ */
 export function useDogLocations(zipCodes: string[]) {
   const [locationsMap, setLocationsMap] = useState<Record<string, Location>>(
     {}
   );
   const [loading, setLoading] = useState(false);
 
+  // Memoized key to avoid unnecessary fetches
   const zipKey = useMemo(() => zipCodes.filter(Boolean).join(","), [zipCodes]);
 
   useEffect(() => {
@@ -44,6 +50,7 @@ export function useDogLocations(zipCodes: string[]) {
       }
     })();
 
+    // Cleanup to prevent state updates on unmounted component
     return () => {
       canceled = true;
     };
@@ -52,6 +59,11 @@ export function useDogLocations(zipCodes: string[]) {
   return { locationsMap, loading };
 }
 
+/**
+ * Custom hook to fetch a single location by zip code.
+ * Returns the location object and loading state.
+ * @param zipCode - Zip code string
+ */
 export function useDogLocation(zipCode?: string) {
   const zipArray = zipCode ? [zipCode] : [];
   const { locationsMap, loading } = useDogLocations(zipArray);

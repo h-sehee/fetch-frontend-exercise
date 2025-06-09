@@ -14,6 +14,10 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import React, { useMemo } from "react";
 
+/**
+ * Props for the Pagination component.
+ * Handles pagination controls and navigation.
+ */
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -30,6 +34,10 @@ interface PaginationProps {
   from: number;
 }
 
+/**
+ * Pagination component for navigating through paged results.
+ * Supports direct page input, previous/next, and ellipsis for large page sets.
+ */
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
@@ -45,16 +53,19 @@ const Pagination: React.FC<PaginationProps> = ({
   total,
   from,
 }) => {
+  // Memoize the list of page numbers to avoid unnecessary recalculations
   const pages = useMemo(() => getPageNumbers(), [getPageNumbers]);
   return (
     <Flex justify="center" align="center" mt="6" direction="column" gap="2">
       <HStack spacing={1}>
+        {/* Previous page button */}
         <IconButton
           icon={<ChevronLeftIcon />}
           onClick={onPrev}
           isDisabled={!canPrev}
           aria-label="Previous"
         />
+        {/* Page number buttons and ellipsis */}
         {pages.map((page, idx) =>
           page === "..." ? (
             <Popover placement="top" key={`ellipsis-${idx}`}>
@@ -105,6 +116,7 @@ const Pagination: React.FC<PaginationProps> = ({
             </Button>
           )
         )}
+        {/* Next page button */}
         <IconButton
           icon={<ChevronRightIcon />}
           onClick={onNext}
@@ -112,6 +124,7 @@ const Pagination: React.FC<PaginationProps> = ({
           aria-label="Next"
         />
       </HStack>
+      {/* Results summary */}
       <Text fontSize="sm" color="gray.600" whiteSpace="nowrap" mt="2">
         Showing{" "}
         <b>

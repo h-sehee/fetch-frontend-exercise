@@ -9,11 +9,19 @@ import Layout from "./components/Layout";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
+/**
+ * App component sets up the main application routes.
+ * - "/" and "/login" render the Login page.
+ * - "/search" is a protected route that renders the Search page inside the Layout.
+ */
 function App() {
   return (
     <Routes>
+      {/* Public routes */}
       <Route index element={<Login />} />
       <Route path="/login" element={<Login />} />
+
+      {/* Protected search route */}
       <Route
         path="/search"
         element={
