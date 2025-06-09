@@ -1,12 +1,4 @@
 /**
- * State interface representing a US state with its code and name.
- */
-interface State {
-  code: string;
-  name: string;
-}
-
-/**
  * List of all US states for use in location filters and dropdowns.
  */
 export const US_STATES = [
