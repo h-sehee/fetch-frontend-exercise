@@ -48,6 +48,7 @@ const DogCard: React.FC<DogCardProps> = ({
     >
       <Avatar
         src={dog.img}
+        loading="lazy"
         boxSize="200px"
         objectFit="cover"
         w="100%"
